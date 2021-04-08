@@ -1,5 +1,5 @@
 import requests
-import pandas as pd
+import pandas as pd,os
 
 # # format: https://classes.cornell.edu/api/2.0/<method>.<responseFormat>?parameters
 # link = "https://classes.cornell.edu/api/2.0/config/rosters.json"
@@ -105,9 +105,10 @@ class Roster():
 
         return df
 
+    def save_df(self,df,path=os.getcwd(),filename="course_data"):
+        df.to_json(os.path.join(path,filename))
 
 if __name__ == "__main__":
     roster = Roster()
     SP21_data = roster.extract_course_rosterv1()
-    a = 2
-    
+    roster.save_df(SP21_data)
