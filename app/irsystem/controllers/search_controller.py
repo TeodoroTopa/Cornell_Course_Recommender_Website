@@ -42,17 +42,21 @@ def run_info_retrieval(query):
 
 	return [x for x in json_content[:10]]
 
+
 @irsystem.route('/', methods=['GET'])
-def search():
-	''' Run Search '''
+def index():
 	query = request.args.get('search')
 	if not query:
-		data = []
-		output_message = ''
+		return render_template('index.html', name=project_name, netid=net_id)
 	else:
-		output_message = "Your search: " + query
 		data = run_info_retrieval(query)
-	return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data)
+		output_message =  "Your search: " + query
+		return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
 
+@irsystem.route('/login', methods=['GET'])
+def login():
+	return render_template('login.html')
 
-
+@irsystem.route('/saved', methods=['GET'])
+def saved():
+	return render_template('saved.html')

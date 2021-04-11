@@ -1,37 +1,37 @@
-# from app import app, socketio
+from app import app, socketio
 
-# if __name__ == "__main__":
-#   print("Flask app running at http://0.0.0.0:5000")
-#   socketio.run(app, host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+  print("Flask app running at http://0.0.0.0:5000")
+  socketio.run(app, host="0.0.0.0", port=5000)
 
-# Gevent needed for sockets
-from gevent import monkey
-monkey.patch_all()
-
-# Imports
-import os
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO
-
-# Configure app
-socketio = SocketIO()
-app = Flask(__name__)
-app.config.from_object(os.environ["APP_SETTINGS"])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-# DB
-db = SQLAlchemy(app)
-
-# Import + Register Blueprints
-# WORKFLOW:
-# from app.blue import blue as blue_print
-# app.register_blueprint(blue_print)
-
-# Initialize app w/SocketIO
-socketio.init_app(app)
-
-# HTTP error handling
-@app.errorhandler(404)
-def not_found(error):
-  return render_template("404.html"), 404
+# # Gevent needed for sockets
+# from gevent import monkey
+# monkey.patch_all()
+#
+# # Imports
+# import os
+# from flask import Flask, render_template
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_socketio import SocketIO
+#
+# # Configure app
+# socketio = SocketIO()
+# app = Flask(__name__)
+# app.config.from_object(os.environ["APP_SETTINGS"])
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+#
+# # DB
+# db = SQLAlchemy(app)
+#
+# # Import + Register Blueprints
+# # WORKFLOW:
+# # from app.blue import blue as blue_print
+# # app.register_blueprint(blue_print)
+#
+# # Initialize app w/SocketIO
+# socketio.init_app(app)
+#
+# # HTTP error handling
+# @app.errorhandler(404)
+# def not_found(error):
+#   return render_template("404.html"), 404

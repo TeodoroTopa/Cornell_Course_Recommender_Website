@@ -16,13 +16,6 @@ padding:10px;
 body {
 padding-top: 0%;
 padding-bottom: 20px;
-background-image: url("/static/img/cornell-background.jpg");
-background-color: rgba(255,255,255,0.6);
-height: 100%;
-background-position: center;
-background-repeat: no-repeat;
-background-size: cover;
-background-blend-mode: lighten;
 }
 .global-search .form-control {
 width:500px;
@@ -65,11 +58,4 @@ color: #4285F4;
 .topnav a.active {
   background-color: #4CAF50;
   color: white;
-}
-.form-group {
-position: absolute;
-left: 50%;
-top: 30%;
-transform: translate(-50%, -50%);
-padding: 10px;
 }
