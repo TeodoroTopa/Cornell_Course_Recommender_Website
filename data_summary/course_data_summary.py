@@ -2,7 +2,7 @@
 Summary of the course data. The input is the course_data file.
 
 mcheng1
-Apr 10, 2021
+Apr 11, 2021
 """
 import numpy as np
 import pandas as pd
@@ -87,7 +87,7 @@ def get_terms_and_TFs(data):
     num_terms = len(terms)
     print("Number of terms among descriptions:", num_terms)
 
-    num_terms_mult_occ = sum(terms_TF == 1)
+    num_terms_mult_occ = len(terms_TF) - sum(terms_TF == 1)
     print("Number of terms that occur more than once:", num_terms_mult_occ)
 
     return (terms, terms_TF)
