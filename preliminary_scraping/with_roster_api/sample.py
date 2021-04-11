@@ -166,7 +166,8 @@ class Roster():
 
     def save_df(self,df,path=os.getcwd(),filename="course_data"):
         df.reset_index(inplace=True)
-        df.to_json(os.path.join(path,filename))
+        df.to_json(os.path.join(path,filename),orient="records")
+
 
 if __name__ == "__main__":
     roster = Roster()
