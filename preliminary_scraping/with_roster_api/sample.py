@@ -1,6 +1,7 @@
 import requests
-import pandas as pd,os
-
+import pandas as pd,os,numpy as np
+from tqdm import tqdm
+from collections import Counter
 # # format: https://classes.cornell.edu/api/2.0/<method>.<responseFormat>?parameters
 # link = "https://classes.cornell.edu/api/2.0/config/rosters.json"
 #
@@ -89,15 +90,73 @@ class Roster():
         a = 2
         return 0
 
+    def recursive_detangling(self,entangled):
+        still_needs_untangling = []
+        keys_for_untangling = []
+        for key, value in entangled.items():
+            # print(key)
+            if isinstance(value, list):
+                if len(value) > 0:
+                    if isinstance(value[0], dict):
+                        keys_for_untangling.append(key)
+                    elif len(value) ==1:
+                        entangled[key] = value[0]
+
+
+        for key in keys_for_untangling:
+            still_needs_untangling.append(entangled.pop(key))
+
+        detangled = pd.DataFrame.from_dict(entangled,orient='index').T
+        # detangled = pd.DataFrame.from_dict(entangled.items())
+
+        for item in still_needs_untangling:
+            new_detangled = self.recursive_detangling(item[0])
+            # new_detangled = pd.DataFrame.from_dict(new_detangled)
+            detangled_column_set = set(detangled.columns)
+            if not any([col in detangled_column_set for col in new_detangled.columns]):
+                # if "subject" in new_detangled.columns:
+                #     abc = 2
+                detangled = pd.concat([detangled,new_detangled],axis=1) #, join="inner"
+            else:
+                duplicates = new_detangled.columns[[col in detangled_column_set for col in new_detangled.columns]]
+                for duplicate in duplicates:
+                    new_detangled.rename(columns={duplicate: duplicate+"_copy"},inplace=True)
+                detangled = pd.concat([detangled,new_detangled],axis=1) #, join="inner"
+
+
+
+        return detangled
     def extract_course_rosterv1(self,year=ROSTER_PERIOD,subject=None):
-        df = pd.DataFrame()
         if type(subject) == type(None):
-            for i in range(len(self.subjects_json)):
+            for i in tqdm(range(len(self.subjects_json))):
                 temp_sub = self.subjects_json[i]['value']
                 classes = self.basic_json_extractor(method=METHODS[5], parameters=[ROSTER_PERIOD, temp_sub])
                 temp_data = classes['data']['classes']
+                detangled_column = pd.DataFrame()
+                for j in range(len(classes['data']['classes'])):
+                    if j == 0:
+                        detangled_column = self.recursive_detangling(classes['data']['classes'][j]['enrollGroups'][0])
+                    else:
+                        temp = self.recursive_detangling(classes['data']['classes'][j]['enrollGroups'][0])
+                        detangled_column = pd.concat([detangled_column,temp])
+
+                temp_column = pd.DataFrame.from_dict(detangled_column)
                 temp_dataFrame = pd.DataFrame.from_dict(temp_data)
-                df = df.append(temp_dataFrame, ignore_index=True)
+                temp_column.set_index(temp_dataFrame.index,inplace=True)
+
+                temp_dataFrame_set = set(temp_dataFrame)
+                duplicates = temp_column.columns[[col in temp_dataFrame_set for col in temp_column.columns]]
+                for duplicate in duplicates:
+                    temp_column.rename(columns={duplicate: duplicate + "_copy"}, inplace=True)
+
+                temp_dataFrame = pd.concat([temp_dataFrame, temp_column], axis=1)
+                if i == 0:
+                    df = temp_dataFrame
+                else:
+                    #remove duplicates:
+                    duplicates = [(category, count)  for category,count in Counter(temp_dataFrame).items() if count > 1]
+
+                    df = pd.concat([df, temp_dataFrame], axis=0)
         else:
             classes = self.basic_json_extractor(method=METHODS[5], parameters=[ROSTER_PERIOD, subject])
             data = classes['data']['classes']
@@ -106,6 +165,7 @@ class Roster():
         return df
 
     def save_df(self,df,path=os.getcwd(),filename="course_data"):
+        df.reset_index(inplace=True)
         df.to_json(os.path.join(path,filename))
 
 if __name__ == "__main__":
