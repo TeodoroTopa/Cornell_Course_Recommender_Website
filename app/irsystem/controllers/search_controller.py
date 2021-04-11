@@ -10,22 +10,28 @@ import botocore
 from botocore import UNSIGNED
 from botocore.config import Config
 
-BUCKET_NAME = 'cornell-course-data-bucket'
+# BUCKET_NAME = 'cornell-course-data-bucket'
 PATH = 'course_data.json'
 
-s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+# s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
 json_content = []
 
 # Getting Course Data
-try:
-	content_object = s3.Object(BUCKET_NAME, PATH)
-	file_content = content_object.get()['Body'].read().decode('utf-8')
-	json_content = json.loads(file_content)
-except botocore.exceptions.ClientError as e:
-	if e.response['Error']['Code'] == "404":
-		print("The object does not exist.")
-	else:
-		raise
+@irsystem.before_first_request
+def get_course_data():
+
+	BUCKET_NAME = 'cornell-course-data-bucket'
+	s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+
+	try:
+		content_object = s3.Object(BUCKET_NAME, PATH)
+		file_content = content_object.get()['Body'].read().decode('utf-8')
+		json_content = json.loads(file_content)
+	except botocore.exceptions.ClientError as e:
+		if e.response['Error']['Code'] == "404":
+			print("The object does not exist.")
+		else:
+			raise
 
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
