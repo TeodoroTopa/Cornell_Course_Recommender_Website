@@ -43,8 +43,7 @@ insert_stmt = (
 )
 data = [('Ramya', 'Ramapriya', 25, 'F', 5000),
          ('John', 'Smith', 21, 'M', 10000), 
-         ('Kurt', 'Lovejoy', 20, 'M', 15000),
-         ('Lisa', 'Sanborn', 27, 'F', 20000)]
+         ('Kurt', 'Lovejoy', 20, 'M', 15000)]
 
 ''' Executing the SQL command '''
 for d in data:
