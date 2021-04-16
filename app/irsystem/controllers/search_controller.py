@@ -9,6 +9,7 @@ import boto3
 import botocore
 from botocore import UNSIGNED
 from botocore.config import Config
+from app.irsystem.models.ranked_courses import RankedCourses
 
 BUCKET_NAME = 'cornell-course-data-bucket'
 PATH = 'course_data.json'
@@ -39,8 +40,10 @@ def run_info_retrieval(query):
 	Should return a list of course dictionaries
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
-
-	return [x for x in json_content[:10]]
+	RankedCoursesObj = RankedCourses(query, json_content)
+	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces()
+	return [json_content[index] for index in ranked_courses_indeces]
+	#return [x for x in json_content[:10]]
 
 
 @irsystem.route('/', methods=['GET'])
