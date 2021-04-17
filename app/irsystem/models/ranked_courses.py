@@ -17,14 +17,19 @@ from botocore import UNSIGNED
 from botocore.config import Config
 
 course_contents = []
+normalized_data  = None
+tf_idf = None
 
 class RankedCourses:
     
     def __init__(self, query):
+        global course_contents, normalized_data
+
         self.query = query
         if len(course_contents)==0:
             self.get_course_data()
-        self.data = pd.json_normalize(course_contents)
+        if normalized_data is None:
+            normalized_data = pd.json_normalize(course_contents)
         self.sorted_indeces = []  # indeces of the courses
 
     def get_course_data(self):
@@ -51,11 +56,11 @@ class RankedCourses:
         long title, and description of the course, and the last row is for the 
         added query.
         """
-        
-        subject_col = self.data.loc[:,'subject']
-        catalogNbr_col = self.data.loc[:,'catalogNbr']
-        titleLong_col = self.data.loc[:,'titleLong']
-        description_col = self.data.loc[:,'description']
+        global normalized_data, tf_idf
+        subject_col = normalized_data.loc[:,'subject']
+        catalogNbr_col = normalized_data.loc[:,'catalogNbr']
+        titleLong_col = normalized_data.loc[:,'titleLong']
+        description_col = normalized_data.loc[:,'description']
         
         # descriptions that correspond to classes that don't have descriptions
         description_col = description_col.fillna("Not applicable.")
@@ -68,39 +73,39 @@ class RankedCourses:
 
         vectorizer = TfidfVectorizer(stop_words='english')
 
-        doc_term_tfidf_matrix = vectorizer.fit_transform(subj_nbr_title_desc_series).toarray()
+        tf_idf = vectorizer.fit_transform(subj_nbr_title_desc_series).toarray()
 
-        return doc_term_tfidf_matrix
-
-    def get_similarity_array(self, get_tfidf_matrix=get_tfidf_matrix):
+    def get_similarity_array(self):
         """Gets the similarity array.
         
         How similar the doc is to the query is determined by the cosine similarity 
         score.
         """
-        
-        doc_term_tfidf_matrix = get_tfidf_matrix(self)
-        num_docs = len(doc_term_tfidf_matrix) - 1
+        global tf_idf
 
-        query_array = doc_term_tfidf_matrix[-1,:]
+        if tf_idf is None:
+            self.get_tfidf_matrix()
+        num_docs = len(tf_idf) - 1
+
+        query_array = tf_idf[-1,:]
         
         sim_array = np.zeros(num_docs)  # array of similarity scores
 
         for i in range(num_docs):
             
             array_1 = [query_array]
-            array_2 = [doc_term_tfidf_matrix[i,:]]
+            array_2 = [tf_idf[i,:]]
             
             sim_array[i] = cosine_similarity(array_1, array_2)
         
         return sim_array
         
 
-    def get_ranked_course_indeces(self, get_similarity_array=get_similarity_array):
+    def get_ranked_course_indeces(self):
         """Gets the indices of the ranked courses.
         """
 
-        sim_array = get_similarity_array(self)
+        sim_array = self.get_similarity_array()
         self.sorted_indeces = list(np.argsort(sim_array)[::-1])
 
         # number of courses to be shown as output
