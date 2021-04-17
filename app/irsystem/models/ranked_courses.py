@@ -11,13 +11,38 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import json
+import boto3
+import botocore
+from botocore import UNSIGNED
+from botocore.config import Config
+
+course_contents = []
 
 class RankedCourses:
     
-    def __init__(self, query, data):
+    def __init__(self, query):
         self.query = query
-        self.data = pd.json_normalize(data)
+        if len(course_contents)==0:
+            self.get_course_data()
+        self.data = pd.json_normalize(course_contents)
         self.sorted_indeces = []  # indeces of the courses
+
+    def get_course_data(self):
+
+        BUCKET_NAME = 'cornell-course-data-bucket'
+        PATH = 'course_data.json'
+        global course_contents
+
+        s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+        try:
+            content_object = s3.Object(BUCKET_NAME, PATH)
+            file_content = content_object.get()['Body'].read().decode('utf-8')
+            course_contents = json.loads(file_content)
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "404":
+                print("The object does not exist.")
+            else:
+                raise
 
     def get_tfidf_matrix(self):
         """Gets the doc term tfidf matrix.
@@ -82,15 +107,13 @@ class RankedCourses:
         num_courses = 15
 
         # the indices of the most similar num_courses courses to the query
-        return self.sorted_indeces[:num_courses]
+        result = self.sorted_indeces[:num_courses]
+        return [course_contents[index] for index in result]
         
 
 def main():
-
-    f = open("../../../preliminary_scraping/with_roster_api/course_data")
-    data = json.load(f)
     query = "language and information"
-    RankedCoursesObj = RankedCourses(query, data)
+    RankedCoursesObj = RankedCourses(query)
     ranked_course_indeces = RankedCoursesObj.get_ranked_course_indeces()
     print(ranked_course_indeces)
 

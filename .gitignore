@@ -6,3 +6,6 @@ vagrant/site.retry
 vagrant/a4keypair.pem
 .idea/
 *.iml
+preliminary_scraping/.ipynb_checkpoints
+**/.ipynb_checkpoints
+preliminary_scraping/with_roster_api/course*
