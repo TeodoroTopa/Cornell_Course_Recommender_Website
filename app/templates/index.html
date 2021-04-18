@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
+{% block styling %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+{% endblock %}
 
 {% block content %}
-<div class="homepagecontent">
+<div class="homepagecontent" style="padding-top: 10%;">
 <img src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
 <h1 class='appTitle'> Touchdown's Course Recommender </h1>
     <div class="searchbox">

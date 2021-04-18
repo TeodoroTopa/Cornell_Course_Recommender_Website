@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block styling %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}" />
+{% endblock %}
+
 {% block content %}
 <form class="form-inline global-search">
     <div class="form-group">

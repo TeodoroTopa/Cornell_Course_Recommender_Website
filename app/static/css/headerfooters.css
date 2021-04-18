@@ -1,0 +1,73 @@
+html{
+    font-family: 'sans-serif';
+    height: 100%;
+    background-image: "../img/cornell-background.jpg";
+}
+
+@media (min-width: 1200px) {
+.container {
+    max-width: 970px;
+}
+}
+@media (min-width:400px){
+.global-search {
+padding: 20px 0;
+text-align:center;
+}
+
+#nav , #nav :visited{
+    background-color:black;
+    width: 30%;
+    font-size: 2em;
+    text-decoration: none;
+    margin: 0px 0px 0px 0px;
+}
+
+#nav :hover {
+  background-color: white;
+  color: gray;
+}
+
+body {
+    padding-top: 0%;
+    padding-bottom: 20px;
+}
+
+.topcorner{
+    position:absolute;
+    top:2%;
+    right:2%;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width : 100%;
+  background-color: rgb(233, 240, 241) ;
+  text-align: left;
+  font-size: 0.5em;
+}
+
+/* Style the links inside the navigation bar */
+.nav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  background-color: #000;
+}
+
+/* Change the color of links on hover */
+.nav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.nav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
