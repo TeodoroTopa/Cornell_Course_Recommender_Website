@@ -11,7 +11,7 @@ from botocore import UNSIGNED
 from botocore.config import Config
 from app.irsystem.models.ranked_courses import RankedCourses
 from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
-import app.irsystem.models.ranked_courses_db as db_access
+from app.irsystem.models.ranked_courses_db import DB_Access
 
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
@@ -28,7 +28,7 @@ def run_info_retrieval(query):
 	# RankedCoursesObj = ElasticsearchRankedCourses(query)
 	# results = RankedCoursesObj.run_query()
 
-	results = db_access.get_ranked_course_indeces()
+	results = DB_Access.get_ranked_course_indeces()
 
 	return results
 
