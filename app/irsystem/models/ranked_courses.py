@@ -24,10 +24,9 @@ class RankedCourses:
     def __init__(self, query):
         global course_contents, normalized_data
 
-        print ("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-
         self.query = query
         if len(course_contents)==0:
+            print ("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
             self.get_course_data()
         if normalized_data is None:
             normalized_data = pd.json_normalize(course_contents)
