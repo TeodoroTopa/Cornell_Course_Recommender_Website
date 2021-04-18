@@ -5,13 +5,25 @@ from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 project_name = "Cornell Course Recommender"
 net_id = "Marina Cheng (mkc236), Joanna Saikali (js3548), Yanchen Zhan (yz366), Mads Christian Berggrein Andersen (mba93), Teodoro Topa (tst42)"
 
-import boto3
-import botocore
-from botocore import UNSIGNED
-from botocore.config import Config
 from app.irsystem.models.ranked_courses import RankedCourses
 from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
 from app.irsystem.models.ranked_courses_db import DB_Access
+import pandas as pd
+
+course_contents = []
+normalized_data  = None
+tf_idf = None
+
+if len(course_contents) == 0:
+	print("Retrieving course contents from s3...")
+	course_contents = get_course_data()
+if normalized_data is None:
+	print("Normalizing data...")
+	normalized_data = pd.json_normalize(course_contents)
+if tf_idf is  None:
+	print("Computing TF-IDF...")
+	tf_idf_vectorizer, docs_tf = get_tfidf_matrix(normalized_data)
+
 
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
@@ -19,18 +31,13 @@ def run_info_retrieval(query):
 	Should return a list of course dictionaries
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
-	# RankedCoursesObj = RankedCourses(query)
-	# ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces()
-	# return ranked_courses_indeces
-	# [json_content[index] for index in ranked_courses_indeces]
-	# return [x for x in json_content[:10]]
-
-	RankedCoursesObj = ElasticsearchRankedCourses(query)
-	results = RankedCoursesObj.run_query()
-
+	RankedCoursesObj = RankedCourses(query)
+	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(tf_idf_vectorizer,docs_tf)
+	return [course_contents[index] for index in ranked_courses_indeces]
+	# RankedCoursesObj = ElasticsearchRankedCourses(query)
+	# results = RankedCoursesObj.run_query()
 	# results = DB_Access.get_ranked_course_indeces()
-
-	return results
+	# return results
 
 
 @irsystem.route('/', methods=['GET'])
@@ -41,8 +48,7 @@ def index():
 	else:
 		data = run_info_retrieval(query)
 		output_message =  "Your search: " + query
-		return render_template('search.html', name=project_name, netid=net_id, 
-								output_message=output_message, data=data, query=query)
+		return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
 
 @irsystem.route('/login', methods=['GET'])
 def login():
