@@ -26,11 +26,14 @@ class RankedCourses:
 
         self.query = query
         if len(course_contents)==0:
+            print ("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
             self.get_course_data()
         if normalized_data is None:
             normalized_data = pd.json_normalize(course_contents)
         self.sorted_indeces = []  # indeces of the courses
 
+    # can substitute this out by performing a DB query
+    # may require code refactoring to switch over from json formatting to DB formatting (tuples)
     def get_course_data(self):
 
         BUCKET_NAME = 'cornell-course-data-bucket'
