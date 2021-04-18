@@ -10,6 +10,8 @@ import botocore
 from botocore import UNSIGNED
 from botocore.config import Config
 from app.irsystem.models.ranked_courses import RankedCourses
+from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
+
 
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
@@ -17,10 +19,14 @@ def run_info_retrieval(query):
 	Should return a list of course dictionaries
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
-	RankedCoursesObj = RankedCourses(query)
-	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces()
-	return ranked_courses_indeces#[json_content[index] for index in ranked_courses_indeces]
-	#return [x for x in json_content[:10]]
+	# RankedCoursesObj = RankedCourses(query)
+	# ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces()
+	# return ranked_courses_indeces
+	# [json_content[index] for index in ranked_courses_indeces]
+	# return [x for x in json_content[:10]]
+	RankedCoursesObj = ElasticsearchRankedCourses(query)
+	results = RankedCoursesObj.run_query()
+	return results
 
 
 @irsystem.route('/', methods=['GET'])

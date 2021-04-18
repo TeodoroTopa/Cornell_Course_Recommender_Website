@@ -57,3 +57,4 @@ Werkzeug==0.16.1
 WTForms==2.2.1
 boto3==1.17.48
 tqdm==4.60.0
+elasticsearch==7.12.0
