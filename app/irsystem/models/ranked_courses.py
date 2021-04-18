@@ -88,10 +88,10 @@ class RankedCourses:
         query_array = tf_idf[-1,:]
         
         sim_array = np.zeros(num_docs)  # array of similarity scores
+        array_1 = [query_array]
 
         for i in range(num_docs):
             
-            array_1 = [query_array]
             array_2 = [tf_idf[i,:]]
             
             sim_array[i] = cosine_similarity(array_1, array_2)

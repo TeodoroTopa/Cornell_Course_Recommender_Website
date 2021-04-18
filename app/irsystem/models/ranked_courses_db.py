@@ -2,9 +2,6 @@
 Gets the ranked list of courses based on the cosine similarity measure 
 between the courses (using the subject, catalog number, title, and description 
 of the courses).
-
-mcheng1
-Apr 16, 2021
 """
 import pandas as pd
 import numpy as np
@@ -128,10 +125,10 @@ class DB_Access:
         query_array = tf_idf[-1,:]
         
         sim_array = np.zeros(num_docs)  # array of similarity scores
+        array_1 = [query_array]
 
         for i in range(num_docs):
             
-            array_1 = [query_array]
             array_2 = [tf_idf[i,:]]
             
             sim_array[i] = cosine_similarity(array_1, array_2)
