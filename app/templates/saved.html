@@ -1,14 +1,9 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="/static/bootstrap.min.css">
-        <link rel="stylesheet" href="/static/saved.css">
-    </head>
-    <body>
-        <div class="topnav">
-          <a href="/">Home</a>
-          <a class="active" href="/saved">My Saved Courses</a>
-          <a href="/login">Login</a>
-        </div>
-    </body>
+{% extends 'base.html' %}
 
-</html>
+{% block styling %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/saved.css') }}" />
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

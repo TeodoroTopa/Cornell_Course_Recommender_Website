@@ -1,0 +1,56 @@
+html{
+    font-family: 'sans-serif';
+    height: 100%;
+    background-image: "../img/cornell-background.jpg";
+  }
+
+body {
+    padding-top: 0%;
+    padding-bottom: 20px;
+    background-image: url("/static/img/cornell-background.jpg");
+    background-color: rgba(255,255,255,0.6);
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: lighten;
+}
+
+.homepagecontent {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0%;
+  align-items: center;
+}
+
+.searchbox{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mainpage_searchform {
+    text-align:center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+#input-search {
+  width: 40%;
+  height: 30px;
+  border: #000 solid 1px;
+  border-radius: 5px;
+}
+
+.btn {
+  margin-left: 5%;
+}
+
+.appTitle{
+  text-align: center
+  font-size: 40px;
+  font-family: Futura;
+  color: #000"
+}

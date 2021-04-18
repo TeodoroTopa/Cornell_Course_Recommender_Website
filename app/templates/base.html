@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headerfooters.css') }}" />
+</head>
+
+{% block styling %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/site2.css') }}" />
+{% endblock %}
+
+<body>
+    <div id='nav' class='nav'>
+        <a href="/">Home</a><a href="/saved">My Saved Courses</a><a href="/login">Login</a>
+    </div>
+
+{% block content %}{% endblock %}
+
+
+<div class="footer">
+    <p>App Created by {{netid}}
+    for CS 4300: Language and Information at Cornell University, Spring 2021.</p>
+</div>
+
+</body>
+</html>
