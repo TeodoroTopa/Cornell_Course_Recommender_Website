@@ -24,6 +24,8 @@ class RankedCourses:
     def __init__(self, query):
         global course_contents, normalized_data
 
+        print ("ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+
         self.query = query
         if len(course_contents)==0:
             self.get_course_data()
