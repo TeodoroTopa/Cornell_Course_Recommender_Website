@@ -25,10 +25,10 @@ def run_info_retrieval(query):
 	# [json_content[index] for index in ranked_courses_indeces]
 	# return [x for x in json_content[:10]]
 
-	# RankedCoursesObj = ElasticsearchRankedCourses(query)
-	# results = RankedCoursesObj.run_query()
+	RankedCoursesObj = ElasticsearchRankedCourses(query)
+	results = RankedCoursesObj.run_query()
 
-	results = DB_Access.get_ranked_course_indeces()
+	# results = DB_Access.get_ranked_course_indeces()
 
 	return results
 
