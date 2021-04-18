@@ -66,16 +66,48 @@ def obtain_col_types(cols):
         "lastName": "TEXT",
         "descrlong": "TEXT"
     }
-        
+
+def generate_arg_string_formats(col_with_types):
+    ret = ""
+    for key in col_with_types.keys():
+        value = col_with_types[key]
+        # if (value == "TEXT"):
+        ret += "%s,"
+        # if (value == "INT"):
+        #     ret += "%d,"
+    return ret[:len(ret)-1]
+
+def load_data(course_json, cols_desired, cols_with_types_dict):
+    ret = [] # list of tuples containing necessary fields
+    for course in course_json:
+        output = list()
+        for col in cols_desired:
+            if (course[col] == None):
+                if (cols_with_types_dict[col] == "TEXT"):
+                    output.append("None")
+                else:
+                    output.append(-1)
+            elif (col == "componentsRequired"): 
+                val = course[col]
+                if (isinstance(val, str)):
+                    output.append(course[col])
+                else:
+                    v = ' '.join(course[col])
+                    output.append(v)
+            else:
+                output.append(course[col])
+        ret.append(tuple(output))
+    
+    return ret
 
 ''' connect to database '''
 ''' note that these credentials may need to change '''
 DATABASE_URL = os.environ['DATABASE_URL']
-DB_NAME = "d79u63b2cbg9om"
-DB_PORT = 5432
-DB_USER = "kugnzgerojalup"
-DB_PASS = "f4c347af5b4f5818e118cf656221324546d81dd0c539cd588f9f80e9bf7ecdc9"
-DB_HOST = "ec2-54-211-176-156.compute-1.amazonaws.com"
+DB_NAME = 
+DB_PORT = 
+DB_USER = 
+DB_PASS = 
+DB_HOST = 
 
 conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -90,7 +122,6 @@ with open('course_data.json') as f: course_info = json.load(f)
 ''' NOTE: do not forget to [heroku login] before starting '''
 # here: extract columns that we want to put into our database
 cols = obtain_col_info(rows_include)
-print (type(cols))
 
 # in this list, we need to assign specific types for everything
 # returns dictionary we can then use to create a string
@@ -99,47 +130,37 @@ cols_with_types = obtain_col_types(cols)
 
 cols_with_types_string = ""
 for key in cols_with_types.keys():
-    cols_with_types_string += key + " " + cols_with_types[key] + ",\n"
+    cols_with_types_string += key + " " + cols_with_types[key] + ","
 
-sql = "CREATE TABLE CLASS(" + cols_with_types_string + ");"
-
+sql = "CREATE TABLE CLASS(" + cols_with_types_string[:len(cols_with_types_string)-1] + ")"
 print (sql)
-# cur.execute(sql)
-# print("Table created successfully........")
-
-def generate_arg_string_formats(col_with_types):
-    ret = ""
-    for key in col_with_types.keys():
-        value = col_with_types[key]
-        if (value == "TEXT"):
-            ret += "%s "
-        if (value == "INT"):
-            ret += "%d "
-    return ret[:len(ret)-1]
+cur.execute(sql)
+print("Table created successfully........")
 
 ''' insert into database '''
 insert_stmt = (
-    "INSERT INTO CLASS(" + ' '.join(cols) + ") " + 
-    "VALUES (" + generate_arg_string_formats(cols_with_types) + ")" # (add corresponding number of %s using lambda fn)
+    "INSERT INTO CLASS(" + ','.join(map(str, cols)) + ") " + 
+    "VALUES (" + generate_arg_string_formats(cols_with_types) + ")" 
 )
 print (insert_stmt)
+    
+data=load_data(course_info, cols, cols_with_types)
 
-# data=[]
+''' Executing the SQL command '''
+for d in data:
+    # print (insert_stmt, d)
+    cur.execute(insert_stmt, d)
 
-# ''' Executing the SQL command '''
-# for d in data:
-#    cur.execute(insert_stmt, d)
+''' Commit your changes in the database '''
+conn.commit()
 
-# ''' Commit your changes in the database '''
-# conn.commit()
+''' select - to test '''
+cur.execute('''SELECT * FROM CLASS''')
+result = cur.fetchall()
+print(result)
 
-# ''' select - to test '''
-# cur.execute('''SELECT * FROM CLASS''')
-# result = cur.fetchall()
-# print(result)
+''' Commit your changes in the database '''
+conn.commit()
 
-# ''' Commit your changes in the database '''
-# conn.commit()
-
-# cur.close()
-# conn.close()
+cur.close()
+conn.close()

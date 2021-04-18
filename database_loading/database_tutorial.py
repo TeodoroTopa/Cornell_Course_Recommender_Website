@@ -33,7 +33,7 @@ sql = '''CREATE TABLE EMPLOYEE(
    SEX CHAR(1),
    INCOME FLOAT
 )'''
-cur.execute(sql)
+# cur.execute(sql)
 print("Table created successfully........")
 
 ''' insert into database '''
@@ -47,18 +47,19 @@ data = [('Ramya', 'Ramapriya', 25, 'F', 5000),
 
 ''' Executing the SQL command '''
 for d in data:
-   cur.execute(insert_stmt, d)
+   print (insert_stmt, d)
+   # cur.execute(insert_stmt, d)
 
-''' Commit your changes in the database '''
-conn.commit()
+# ''' Commit your changes in the database '''
+# conn.commit()
 
-''' select '''
-cur.execute('''SELECT * FROM EMPLOYEE''')
-result = cur.fetchall()
-print(result)
+# ''' select '''
+# cur.execute('''SELECT * FROM EMPLOYEE''')
+# result = cur.fetchall()
+# print(result)
 
-''' Commit your changes in the database '''
-conn.commit()
+# ''' Commit your changes in the database '''
+# conn.commit()
 
 cur.close()
 conn.close()
