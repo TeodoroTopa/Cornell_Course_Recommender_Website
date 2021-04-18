@@ -4,25 +4,26 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}" />
 {% endblock %}
 
+
 {% block content %}
+<img id= 'touchdown' src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
+
 <form class="form-inline global-search">
-    <div class="form-group">
-        <input id="input" type="text" name="search" class="form-control" placeholder={{query}}>
-    </div>
+        <input id="input" type="text" name="search" class="form-control" placeholder= "{{query}}">
     <button type="submit" class="btn btn-info"> SEARCH </button>
 </form>
 
 {% if data %}
-<ol class='search_results'>
+<ol id='search_results'>
         {% for d in data %}
         <li class=searchresult>
-            <h3 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h3>
-            <h5 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h5>
-            <p class='coursedescription'>
+            <h2 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h2>
+            <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
+            <p class='coursedescription'><strong>Description:</strong>
             {% if d['description'] %}{{d['description']}}</p>
             {% else %}No description is available at this time. Sorry!</p>
             {% endif %}
-            <p class='prereq'>Prerequisites/Corequisites:
+            <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
             {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
             {% else %}{{d['catalogPrereqCoreq']}}</p>
             {% endif %}
