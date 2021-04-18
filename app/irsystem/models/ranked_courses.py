@@ -18,7 +18,6 @@ from botocore.config import Config
 
 course_contents = []
 normalized_data  = None
-tf_idf = None
 
 class RankedCourses:
     
@@ -56,7 +55,7 @@ class RankedCourses:
         long title, and description of the course, and the last row is for the 
         added query.
         """
-        global normalized_data, tf_idf
+        global normalized_data
         subject_col = normalized_data.loc[:,'subject']
         catalogNbr_col = normalized_data.loc[:,'catalogNbr']
         titleLong_col = normalized_data.loc[:,'titleLong']
@@ -73,7 +72,7 @@ class RankedCourses:
 
         vectorizer = TfidfVectorizer(stop_words='english')
 
-        tf_idf = vectorizer.fit_transform(subj_nbr_title_desc_series).toarray()
+        return vectorizer.fit_transform(subj_nbr_title_desc_series).toarray()
 
     def get_similarity_array(self):
         """Gets the similarity array.
@@ -81,10 +80,9 @@ class RankedCourses:
         How similar the doc is to the query is determined by the cosine similarity 
         score.
         """
-        global tf_idf
 
-        if tf_idf is None:
-            self.get_tfidf_matrix()
+        tf_idf = self.get_tfidf_matrix()
+
         num_docs = len(tf_idf) - 1
 
         query_array = tf_idf[-1,:]
