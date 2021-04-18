@@ -2,9 +2,6 @@
 Gets the ranked list of courses based on the cosine similarity measure 
 between the courses (using the subject, catalog number, title, and description 
 of the courses).
-
-mcheng1
-Apr 16, 2021
 """
 import pandas as pd
 import numpy as np
