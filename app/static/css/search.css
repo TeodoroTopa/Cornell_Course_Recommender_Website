@@ -16,13 +16,6 @@ padding:10px;
 body {
 padding-top: 0%;
 padding-bottom: 20px;
-background-image: url("/static/img/cornell-background.jpg");
-background-color: rgba(255,255,255,0.6);
-height: 100%;
-background-position: center;
-background-repeat: no-repeat;
-background-size: cover;
-background-blend-mode: lighten;
 }
 .global-search .form-control {
 width:500px;
@@ -44,8 +37,9 @@ border: none
 .step-links a{
 color: #4285F4;
 }
+
 /* Style the links inside the navigation bar */
-.topnav a {
+.nav a {
   float: left;
   color: #f2f2f2;
   text-align: center;
@@ -56,20 +50,13 @@ color: #4285F4;
 }
 
 /* Change the color of links on hover */
-.topnav a:hover {
+.nav a:hover {
   background-color: #ddd;
   color: black;
 }
 
 /* Add a color to the active/current link */
-.topnav a.active {
+.nav a.active {
   background-color: #4CAF50;
   color: white;
-}
-.form-group {
-position: absolute;
-left: 50%;
-top: 30%;
-transform: translate(-50%, -50%);
-padding: 10px;
 }

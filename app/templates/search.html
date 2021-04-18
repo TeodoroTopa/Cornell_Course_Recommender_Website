@@ -1,29 +1,29 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="/static/bootstrap.min.css">
-        <link rel="stylesheet" href="/static/search.css">
-    </head>
-    <body>
-        <div class="topnav">
-          <a href="/">Home</a>
-          <a href="/saved">My Saved Courses</a>
-          <a href="/login">Login</a>
-        </div>
-        <form class="form-inline global-search">
-            <div class="form-group">
-                <input id="input" type="text" name="search" class="form-control" placeholder={{query}}>
-            </div>
-            <button type="submit" class="btn btn-info"> SEARCH </button>
-        </form>
-        <form class="form-inline global-search">
-        {% if data %}
-            <h1>{{output_message}}</h1>
-            {% for d in data %}  
-                <br>
-                <p>{{d['titleShort']}}</p>
-            {% endfor %}
-        {% endif %}
-        </form>
-    </body>
+{% extends 'base.html' %}
 
-</html>
+{% block content %}
+<form class="form-inline global-search">
+    <div class="form-group">
+        <input id="input" type="text" name="search" class="form-control" placeholder={{query}}>
+    </div>
+    <button type="submit" class="btn btn-info"> SEARCH </button>
+</form>
+
+{% if data %}
+<ol class='search_results'>
+        {% for d in data %}
+        <li class=searchresult>
+            <h3 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h3>
+            <h5 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h5>
+            <p class='coursedescription'>
+            {% if d['description'] %}{{d['description']}}</p>
+            {% else %}No description is available at this time. Sorry!</p>
+            {% endif %}
+            <p class='prereq'>Prerequisites/Corequisites:
+            {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
+            {% else %}{{d['catalogPrereqCoreq']}}</p>
+            {% endif %}
+        </li>
+        {% endfor %}
+</ol>
+{% endif %}
+{% endblock %}

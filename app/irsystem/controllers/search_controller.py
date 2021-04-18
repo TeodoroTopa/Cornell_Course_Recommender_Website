@@ -51,7 +51,8 @@ def index():
 	else:
 		data = run_info_retrieval(query)
 		output_message =  "Your search: " + query
-		return render_template('search.html', name=project_name, netid=net_id, output_message=output_message, data=data, query=query)
+		return render_template('search.html', name=project_name, netid=net_id, 
+								output_message=output_message, data=data, query=query)
 
 @irsystem.route('/login', methods=['GET'])
 def login():

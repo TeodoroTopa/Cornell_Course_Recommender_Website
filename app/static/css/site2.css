@@ -1,0 +1,79 @@
+html{
+    font-family: 'sans-serif';
+    height: 100%;
+    background-image: "../img/cornell-background.jpg";
+  }
+
+#nav , #nav :visited{
+    background-color:black;
+    width: 30%;
+    font-size: 2em;
+    text-decoration: none;
+    margin: 0px 0px 0px 0px;
+}
+
+#nav :hover {
+  background-color: white;
+  color: gray;
+}
+
+body {
+  font-family: 'sans-serif';
+  height: 100%;
+  background-image: url("../img/cornell-background.jpg");
+  background-color: rgba(255,255,255,0.6);
+  background-size: cover;
+}
+
+.homepagecontent {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5%;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+}
+
+.searchbox{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mainpage_searchform {
+text-align:center;
+display: flex;
+flex-direction: row;
+align-items: center;
+width: 100%;
+}
+
+#input-search {
+  width: 50%;
+  height: 30px;
+  border: #000 solid 1px;
+  border-radius: 5px;
+}
+
+.btn {
+  width: 7%;
+  margin-left: 5%;
+}
+
+.appTitle{
+  font-size: 40px;
+  font-family: Futura;
+  color: #000"
+}
+
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width : 100%;
+  background-color: rgb(233, 240, 241) ;
+  text-align: left;
+  font-size: 0.5em;
+}
