@@ -2,6 +2,7 @@ import json,pandas as pd, numpy as np, matplotlib.pyplot as plt,os
 from data_summary.course_data_summary import get_data,get_terms_and_TFs
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from nltk.tokenize import word_tokenize, sent_tokenize
 
 def keyword_extractor(doc_term_TF_matrix,terms,vectorizer,description,n=10):
     """
@@ -51,3 +52,29 @@ def keyword_extractor(doc_term_TF_matrix,terms,vectorizer,description,n=10):
     for k in results:
         print(k, results[k])
     return results
+
+def text_extractor(course_desc,query,doc_term_TF_matrix,terms,vectorizer):
+    """
+    Get sentences
+    For each sentence find a similarity score
+    Find the sentence with largest score. Add that and the next 2-3 sentences.
+    """
+    query = query.lower()
+    query_vec = vectorizer.transform(pd.Series(query))
+    sentences = sent_tokenize(course_desc)
+    sentences_vec = [vectorizer.transform(pd.Series(sentence)) for sentence in sentences]
+
+    tfidf_transformer = TfidfTransformer(smooth_idf=True, use_idf=True)
+    tfidf_transformer.fit(doc_term_TF_matrix)
+
+    tf_idf_desc = tfidf_transformer.transform(query_vec)
+    tf_idf_sentences = [tfidf_transformer.transform(sentence) for sentence in sentences_vec]
+
+    sim_array = np.zeros(len(sentences_vec))  # array of similarity scores
+
+    array_1 = tf_idf_desc
+    for i in range(len(sentences_vec)):
+        array_2 = tf_idf_sentences[i]
+        sim_array[i] = cosine_similarity(array_1, array_2)
+    print(course_desc)
+    print("Most:",sentences[np.argmax(sim_array)])
