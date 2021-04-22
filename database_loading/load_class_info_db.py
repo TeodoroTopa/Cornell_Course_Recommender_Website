@@ -103,11 +103,12 @@ def load_data(course_json, cols_desired, cols_with_types_dict):
 ''' connect to database '''
 ''' note that these credentials may need to change '''
 DATABASE_URL = os.environ['DATABASE_URL']
-DB_NAME = "d79u63b2cbg9om"
-DB_PORT = 5432
-DB_USER = "kugnzgerojalup"
-DB_PASS = "f4c347af5b4f5818e118cf656221324546d81dd0c539cd588f9f80e9bf7ecdc9"
-DB_HOST = "ec2-54-211-176-156.compute-1.amazonaws.com"
+url = make_url(DATABASE_URL)
+DB_NAME = url.database
+DB_PORT = url.port
+DB_USER = url.username
+DB_PASS = url.password
+DB_HOST = url.host
 
 conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -133,7 +134,7 @@ for key in cols_with_types.keys():
     cols_with_types_string += key + " " + cols_with_types[key] + ","
 
 sql = "CREATE TABLE CLASS(" + cols_with_types_string[:len(cols_with_types_string)-1] + ")"
-print (sql)
+# print (sql)
 cur.execute(sql)
 print("Table created successfully........")
 
@@ -142,7 +143,7 @@ insert_stmt = (
     "INSERT INTO CLASS(" + ','.join(map(str, cols)) + ") " + 
     "VALUES (" + generate_arg_string_formats(cols_with_types) + ")" 
 )
-print (insert_stmt)
+# print (insert_stmt)
     
 data=load_data(course_info, cols, cols_with_types)
 
@@ -157,7 +158,7 @@ conn.commit()
 ''' select - to test '''
 cur.execute('''SELECT * FROM CLASS''')
 result = cur.fetchall()
-print(result)
+# print(result)
 
 ''' Commit your changes in the database '''
 conn.commit()
