@@ -25,72 +25,27 @@ def text_extractor(course_desc,query,doc_term_TF_matrix,terms,vectorizer):
     Find the sentence with largest score. Add that and the next 2-3 sentences.
     """
     query = query.lower()
-    query = vectorizer.transform(pd.Series(query))
+    query_vec = vectorizer.transform(pd.Series(query))
     sentences = sent_tokenize(course_desc)
-    sentences = [vectorizer.transform(pd.Series(sentence)) for sentence in sentences]
+    sentences_vec = [vectorizer.transform(pd.Series(sentence)) for sentence in sentences]
 
     tfidf_transformer = TfidfTransformer(smooth_idf=True, use_idf=True)
     tfidf_transformer.fit(doc_term_TF_matrix)
 
-    tf_idf_desc = tfidf_transformer.transform(query)
-    tf_idf_sentences = tfidf_transformer.transform(sentences)
+    tf_idf_desc = tfidf_transformer.transform(query_vec)
+    tf_idf_sentences = [tfidf_transformer.transform(sentence) for sentence in sentences_vec]
 
-    sim_array = np.zeros(sentences)  # array of similarity scores
+    sim_array = np.zeros(len(sentences_vec))  # array of similarity scores
 
-    array_1 = [tf_idf_desc]
-    for i in range(sentences):
-        array_2 = [tf_idf_sentences[i]]
+    array_1 = tf_idf_desc
+    for i in range(len(sentences_vec)):
+        array_2 = tf_idf_sentences[i]
         sim_array[i] = cosine_similarity(array_1, array_2)
+    print(course_desc)
+    print("Most:",sentences[np.argmax(sim_array)])
 
-    # items = tf_idf_desc.tocoo()
-    #
-    # tuples = zip(items.col, items.data)
-    # sorted_items = sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
-    #
-    # sorted_items = sorted_items[:n]
-    #
-    # score_vals = []
-    # feature_vals = []
-    #
-    # for idx, score in sorted_items:
-    #     score_vals.append(np.round(score, 4))
-    #     feature_vals.append(terms[idx])
-    #
-    # results = {}
-    # for idx in range(len(feature_vals)):
-    #     results[feature_vals[idx]] = score_vals[idx]
-    #
-    # for k in results:
-    #     print(k, results[k])
-    # return results
-    # vectorizer = CountVectorizer(stop_words='english')
-    # doc_term_TF_matrix = vectorizer.fit_transform(sentences).toarray()
-    a = 2
-    # doc_term_TF_matrix = vectorizer.fit_transform(sentences).toarray()
-    #
-    # tfidf_transformer = TfidfTransformer(smooth_idf=True, use_idf=True)
-    # tfidf_transformer.fit(doc_term_TF_matrix)
-    #
-    # tf_idf_desc = tfidf_transformer.transform(sentences)
-    # items = tf_idf_desc.tocoo()
-    #
-    # tuples = zip(items.col, items.data)
-    # sorted_items = sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
-    #
-    # sorted_items = sorted_items[:10]
-    #
-    # score_vals = []
-    # feature_vals = []
-    #
-    # for idx, score in sorted_items:
-    #     score_vals.append(np.round(score, 4))
-    #     feature_vals.append(terms[idx])
-    #
-    # results = {}
-    # for idx in range(len(feature_vals)):
-    #     results[feature_vals[idx]] = score_vals[idx]
-    #
-    # a = 2
+   #### DECICE WHAT DATA TO RETURN ###
+   return 0
 
 if __name__ == "__main__":
     course_data, course_desc = load_course_descriptions()
