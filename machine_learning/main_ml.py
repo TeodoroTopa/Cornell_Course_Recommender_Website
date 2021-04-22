@@ -10,6 +10,8 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 def loadData():
     path_course = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\course_data'
     path_rmp = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\rate_my_professor.csv'
+    # path_rmp = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\ratemyprof_svm'
+
     course_data = get_data(path=path_course)
     rmp_data = get_data(path=path_rmp, filetype="csv")
     return course_data, rmp_data

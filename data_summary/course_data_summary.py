@@ -70,6 +70,7 @@ def get_course_description_summary(data):
     print("Number of classes without descriptions:", num_wo_desc)
 
 def phi_rate_my_prof(data,columns_included = ['prof_name','prof_dept','class_name','comment','difficulty','rating']):
+    """Turns the RMP dataset into something that can be vectorized, and chose a subset of """
     number_of_reviews = 1
     phi0_rate_my_prof = pd.DataFrame(columns=columns_included)
     data_subset = data[columns_included]
@@ -92,9 +93,13 @@ def phi_rate_my_prof(data,columns_included = ['prof_name','prof_dept','class_nam
 
 
         old_class_name = cur_class_name
-        phi0_rate_my_prof.drop('index', axis=1, inplace=True)
-        save_df(phi0_rate_my_prof,path=os.getcwd(),filename="ratemyprof_svm")
+    phi0_rate_my_prof.drop('index', axis=1, inplace=True)
+    phi0_rate_my_prof.drop('class_name', axis=1, inplace=True)
+    # save_df(phi0_rate_my_prof,path=os.getcwd(),filename="ratemyprof_svm")
     return phi0_rate_my_prof
+
+def format_rmp_data(data):
+    pass
 
 def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     """Gets the terms and the TFs of the terms.
@@ -102,7 +107,7 @@ def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     Stop words are not used.
     """
     if rmp:
-        description_col = phi_rate_my_prof(data)
+        description_col = format_rmp_data(data)
     else:
         description_col = data.loc[:,'description']
 
