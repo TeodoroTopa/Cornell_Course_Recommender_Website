@@ -15,8 +15,8 @@ AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=of
 
 AUTHORIZATION_SCOPE = 'openid email profile'
 
-AUTH_REDIRECT_URI = "http://cornellcourserecommender2.herokuapp.com/google/auth"
-BASE_URI = "http://cornellcourserecommender2.herokuapp.com"
+AUTH_REDIRECT_URI = os.environ["LOGIN_URI"]
+BASE_URI = os.environ["BASE_URI"]
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 
