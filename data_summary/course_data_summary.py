@@ -12,7 +12,7 @@ from tqdm import tqdm
 import os
 
 
-def save_df(self, df, path=os.getcwd(), filename="course_data"):
+def save_df(df, path=os.getcwd(), filename="course_data"):
     df.reset_index(inplace=True)
     df.to_json(os.path.join(path, filename), orient="records")
 

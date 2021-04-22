@@ -10,7 +10,7 @@ def find_similar_course(doc_term_TF_matrix=None, terms=None, vectorizer=None, de
     #Methodology: Perform SVD on ratemyproffesor data and course_desc
     #Identify the particular course, that you want to find similar ones for.
     #Use nearest neighbor to find 10 most similar courses
-    if doc_term_TF_matrix ==None:
+    if isinstance(doc_term_TF_matrix,None):
         vectorizer = TfidfVectorizer(stop_words='english', max_df=.8,min_df=2)
         doc_term_TF_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
