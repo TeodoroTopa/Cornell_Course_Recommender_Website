@@ -6,8 +6,14 @@
 
 {% block content %}
 <div class="homepagecontent" style="padding-top: 10%;">
-<img src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
-<h1 class='appTitle'> Touchdown's Course Recommender </h1>
+    <img src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
+
+    {% if is_logged %}
+        <h1 class='appTitle'> {{username}}'s Course Recommender </h1>
+    {% else %}
+        <h1 class='appTitle'> Cornell Course Recommender </h1>
+    {% endif %}
+
     <div class="searchbox">
         <form class="mainpage_searchform"> 
             <input id="input-search" type="text" name="search"

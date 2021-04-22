@@ -48,5 +48,6 @@ html{
 .appTitle{
   text-align: center;
   font-size: 40px;
-  color: #000;
+  color: #b31b1b;
+  text-shadow:0.5px 0.5px #000000;
 }
