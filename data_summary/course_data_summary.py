@@ -10,12 +10,13 @@ from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
 
 
-def get_data():
+def get_data(path = "../preliminary_scraping/with_roster_api/course_data",filetype="json"):
     """Gets the data.
     """
-
-    path = "../preliminary_scraping/with_roster_api/course_data"
-    data = pd.read_json(path)
+    if filetype == "json":
+        data = pd.read_json(path)
+    else:
+        data = pd.read_csv(path)
     
     return data
 
@@ -63,7 +64,7 @@ def get_course_description_summary(data):
     print("Number of classes without descriptions:", num_wo_desc)
 
 
-def get_terms_and_TFs(data):
+def get_terms_and_TFs(data,max_dfq=1):
     """Gets the terms and the TFs of the terms.
 
     Stop words are not used.
@@ -73,7 +74,7 @@ def get_terms_and_TFs(data):
     # dropping descriptions that correpond to classes that don't have descriptions
     description_col = description_col.dropna()
 
-    vectorizer = CountVectorizer(stop_words='english')  # don't use stop words
+    vectorizer = CountVectorizer(stop_words='english',max_df=max_dfq)  # don't use stop words
     
     doc_term_TF_matrix = vectorizer.fit_transform(description_col).toarray()
     term_doc_TF_matrix = doc_term_TF_matrix.T
@@ -89,6 +90,8 @@ def get_terms_and_TFs(data):
 
     num_terms_mult_occ = len(terms_TF) - sum(terms_TF == 1)
     print("Number of terms that occur more than once:", num_terms_mult_occ)
+    if max_dfq != 1:
+        return (terms, terms_TF,doc_term_TF_matrix,vectorizer)
 
     return (terms, terms_TF)
 
