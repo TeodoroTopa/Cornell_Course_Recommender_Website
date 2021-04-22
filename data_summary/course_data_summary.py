@@ -8,7 +8,13 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
+from tqdm import tqdm
+import os
 
+
+def save_df(self, df, path=os.getcwd(), filename="course_data"):
+    df.reset_index(inplace=True)
+    df.to_json(os.path.join(path, filename), orient="records")
 
 def get_data(path = "../preliminary_scraping/with_roster_api/course_data",filetype="json"):
     """Gets the data.
@@ -63,13 +69,42 @@ def get_course_description_summary(data):
     print("Number of classes with descriptions:", num_w_desc)
     print("Number of classes without descriptions:", num_wo_desc)
 
+def phi_rate_my_prof(data,columns_included = ['prof_name','prof_dept','class_name','comment','difficulty','rating']):
+    number_of_reviews = 1
+    phi0_rate_my_prof = pd.DataFrame(columns=columns_included)
+    data_subset = data[columns_included]
+    sorted_df = data_subset.sort_values(by='class_name').reset_index()
+    old_class_name = ""
+    for idx,cur_class_name in tqdm(enumerate(sorted_df.loc[:, 'class_name'])):
+        if old_class_name != cur_class_name:
+            phi0_rate_my_prof = phi0_rate_my_prof.append(sorted_df.loc[idx],ignore_index=True)
+            if number_of_reviews != 1:
+                phi0_rate_my_prof.loc[index_phi, ["difficulty"]] =  phi0_rate_my_prof.loc[index_phi, ["difficulty"]] / number_of_reviews
+                phi0_rate_my_prof.loc[index_phi, ["rating"]] = phi0_rate_my_prof.loc[index_phi, ["rating"]] / number_of_reviews
+            number_of_reviews = 1
+        else:
+            number_of_reviews +=1
+            index_phi = phi0_rate_my_prof.shape[0]-1
+            phi0_rate_my_prof.loc[index_phi, ['comment']] += sorted_df.loc[idx, ['comment']]
+            phi0_rate_my_prof.loc[index_phi, ["difficulty"]] += sorted_df.loc[idx, ["difficulty"]]
+            phi0_rate_my_prof.loc[index_phi, ["rating"]] += sorted_df.loc[idx, ["rating"]]
+            # phi0_rate_my_prof.loc[index_phi, ["take_again"]] += sorted_df.loc[idx, ["take_again"]]
 
-def get_terms_and_TFs(data,max_dfq=1):
+
+        old_class_name = cur_class_name
+        phi0_rate_my_prof.drop('index', axis=1, inplace=True)
+        save_df(phi0_rate_my_prof,path=os.getcwd(),filename="ratemyprof_svm")
+    return phi0_rate_my_prof
+
+def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     """Gets the terms and the TFs of the terms.
 
     Stop words are not used.
     """
-    description_col = data.loc[:,'description']
+    if rmp:
+        description_col = phi_rate_my_prof(data)
+    else:
+        description_col = data.loc[:,'description']
 
     # dropping descriptions that correpond to classes that don't have descriptions
     description_col = description_col.dropna()
