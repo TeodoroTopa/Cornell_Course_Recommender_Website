@@ -56,12 +56,12 @@ def json_numpy_obj_hook(dct):
 
 def get_course_data():
     BUCKET_NAME = 'cornell-course-data-bucket'
-    PATH = 'course_data.json'
+    PATH = 'course_data_2.json'
 
     s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
     try:
         content_object = s3.Object(BUCKET_NAME, PATH)
-        file_content = content_object.get()['Body'].read().decode('utf-8')
+        file_content = content_object.get()['Body'].read().decode('utf-8-sig')
         return json.loads(file_content)
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
