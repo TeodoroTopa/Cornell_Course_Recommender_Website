@@ -47,7 +47,12 @@ def run_info_retrieval(query):
 		course_name = course_contents[index]['titleLong']
 		# if the course already exists in [each_course_unique]
 		if (course_name in class_titles_unique):
-			print ("cross-listed with: " + str(course_contents[index]['subject_copy']) + " " + str(course_contents[index]['catalogNbr_copy']))
+
+			# find original course in [each_course_info] (generally the last course entered) and
+			# update that class's description to account for a cross-listed class
+			previous_class = each_course_info[len(each_course_info) - 1]
+			cross_list_string = "Cross-listed with " + str(course_contents[index]['subject']) + " " + str(course_contents[index]['catalogNbr'] + ".")
+			each_course_info[len(each_course_info)-1]['description'] = previous_class['description'] + cross_list_string 
 			# now, integrate this into the course descriptions so people can have multiple cross-references
 			# we need to discuss how to approach this as it relates to how we rank our courses
 
@@ -59,6 +64,7 @@ def run_info_retrieval(query):
 			break
 
 	return each_course_info
+	# return [course_contents[index] for index in ranked_courses_index]
 
 def get_user_info():
 	if google_auth.is_logged_in():
