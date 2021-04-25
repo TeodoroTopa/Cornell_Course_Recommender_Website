@@ -24,13 +24,13 @@ class RankedCourses:
 
         # print (self.sorted_indeces)
 
-        # return self.sorted_indeces
+        return self.sorted_indeces
 
         # number of courses to be shown as output
-        num_courses = 15
+        # num_courses = 15
 
         # the indices of the most similar num_courses courses to the query
-        result = self.sorted_indeces[:num_courses]
+        # result = self.sorted_indeces[:num_courses]
 
         return result
         
