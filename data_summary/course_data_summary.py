@@ -94,12 +94,24 @@ def phi_rate_my_prof(data,columns_included = ['prof_name','prof_dept','class_nam
 
         old_class_name = cur_class_name
     phi0_rate_my_prof.drop('index', axis=1, inplace=True)
-    phi0_rate_my_prof.drop('class_name', axis=1, inplace=True)
-    # save_df(phi0_rate_my_prof,path=os.getcwd(),filename="ratemyprof_svm")
+    phi0_rate_my_prof["text_input"] = sorted_df.loc[:, "prof_name"] + " " + sorted_df.loc[:, "prof_dept"] + " " + sorted_df.loc[:, "comment"]
+    phi0_rate_my_prof.loc[:, "text_input"].replace(regex=r'&#39;', value='',inplace=True)
+    save_df(phi0_rate_my_prof,path=os.getcwd(),filename="ratemyprof_svm")
     return phi0_rate_my_prof
 
-def format_rmp_data(data):
-    pass
+# def format_rmp_data(data):
+#     new_dataFrame = pd.DataFrame(columns=["text_input"])
+#     # text_columns = ['prof_name', "prof_dept","comment"]
+#
+#     data["text_input"] = data.loc[:, "prof_name"] + " " + data.loc[:, "prof_dept"] + " " + data.loc[:, "comment"]
+#
+#     # for cat in text_columns:
+#     #     text_columns["text_input"] = text_columns["text_input"] + " " + text_columns[:,cat].map(str)
+#     #
+#     # text_columns = data.loc[:,['prof_name', "prof_dept","comment"]]
+#     # numericals = data.loc[:,['difficulty',"rating"]]
+#     return data
+
 
 def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     """Gets the terms and the TFs of the terms.
@@ -107,7 +119,8 @@ def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     Stop words are not used.
     """
     if rmp:
-        description_col = format_rmp_data(data)
+        # phi_rate_my_prof(data)
+        description_col = data.loc[:,"text_input"]
     else:
         description_col = data.loc[:,'description']
 
@@ -131,7 +144,7 @@ def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     num_terms_mult_occ = len(terms_TF) - sum(terms_TF == 1)
     print("Number of terms that occur more than once:", num_terms_mult_occ)
     if max_dfq != 1:
-        return (terms, terms_TF,doc_term_TF_matrix,vectorizer)
+        return (terms, terms_TF,doc_term_TF_matrix,vectorizer,data.loc[description_col.index,:])
 
     return (terms, terms_TF)
 

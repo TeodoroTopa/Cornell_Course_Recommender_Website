@@ -9,11 +9,13 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 
 def loadData():
     path_course = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\course_data'
-    path_rmp = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\rate_my_professor.csv'
-    # path_rmp = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\ratemyprof_svm'
+    # path_rmp = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\rate_my_professor.csv'
+    # rmp_data = get_data(path=path_rmp, filetype="csv")
+
+    path_rmp = r'C:\Users\Mads-\Documents\Universitet\6. Semester\INFO4300 Language and Information\ratemyprof_svm'
+    rmp_data = get_data(path=path_rmp)
 
     course_data = get_data(path=path_course)
-    rmp_data = get_data(path=path_rmp, filetype="csv")
     return course_data, rmp_data
 
 def load_course_descriptions():
@@ -25,20 +27,20 @@ def load_course_descriptions():
 
 if __name__ == "__main__":
     course_data, course_desc, rmp_data = load_course_descriptions()
-    terms, terms_TF,doc_term_TF_matrix,vectorizer  = get_terms_and_TFs(course_data,max_dfq=.5)
-    terms_rmp, terms_TF_rmp,doc_term_TF_matrix_rmp,vectorizer_rmp  = get_terms_and_TFs(rmp_data,max_dfq=.5,rmp=True)
+    terms, terms_TF,doc_term_TF_matrix,vectorizer,new_course_data  = get_terms_and_TFs(course_data,max_dfq=.8)
+    # terms_rmp, terms_TF_rmp,doc_term_TF_matrix_rmp,vectorizer_rmp,new_rmp_data  = get_terms_and_TFs(rmp_data,max_dfq=0.9,rmp=True)
 
 
-    ##Examples of keyword extraction:
+    # Examples of keyword extraction:
     # for i in range(1, 3000, 1000):
     #     print(course_data.iloc[i][["titleLong"]])
     #     desc_example = course_desc.iloc[i]
     #     a = vectorizer.transform(desc_example)
-    #     keyword_extractor(doc_term_TF_matrix, terms, vectorizer, desc_example, n=3)
+    #     keyword_extractor(doc_term_TF_matrix, terms, vectorizer, desc_example, n=5)
     #     print("#####")
-
-
-    #Examples of text extraction:
+    #
+    #
+    # # Examples of text extraction:
     # queries = ["Culture and influence","Turing Machine","Advanced linguistics", "information retrieval"]
     # for idx,i in enumerate(range(1, 3000, 1000)):
     #     print(course_data.iloc[i][["titleLong"]])
@@ -51,6 +53,29 @@ if __name__ == "__main__":
     #     summarized_text = text_extractor(test_str,queries[idx],doc_term_TF_matrix,terms,vectorizer)
 
     #Find similar course
-    desc_example = course_desc.iloc[1189]
-    print(desc_example)
-    find_similar_course(doc_term_TF_matrix, terms, vectorizer, desc_example)
+    for idx, i in enumerate(range(1, 3000, 600)):
+        # desc_example = course_desc.iloc[1189]
+        desc_example = course_desc.iloc[i]
+        print("Input title: ",course_data.iloc[i][["titleLong"]][0]," . Input description",desc_example[0])
+        similar_courses = find_similar_course(doc_term_TF_matrix, terms, vectorizer, desc_example,dimensions=150)
+        titles = []
+        for sim_course_idx in similar_courses:
+            # print(course_data.iloc[sim_course_idx][["titleLong"]])
+            title = new_course_data.iloc[sim_course_idx][["titleLong"]][0]
+            if title not in titles:
+                titles.append(title)
+                print(len(titles),".",title)
+
+    # Find similar course with RMP
+    # for idx, i in enumerate(range(1, 3000, 1000)):
+    #     # desc_example = course_desc.iloc[1189]
+    #     desc_example = course_desc.iloc[i]
+    #     print(course_data.iloc[i][["titleLong"]],desc_example)
+    #     similar_courses = find_similar_course(doc_term_TF_matrix_rmp, terms_rmp, vectorizer_rmp, desc_example)
+    #     #3699 1171 2220  162 3681 3548 2234 1935 1881  319
+    #     for sim_course_idx in similar_courses:
+    #         # print(course_data.iloc[sim_course_idx][["titleLong"]])
+    #         print(new_rmp_data.iloc[sim_course_idx][["class_name"]]," : ",)
+    #     test =2
+
+
