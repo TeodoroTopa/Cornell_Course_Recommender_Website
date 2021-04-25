@@ -16,6 +16,7 @@ from app.accounts.controllers import google_auth
 course_contents = []
 normalized_data  = None
 tf_idf = None
+svm_vector = None
 
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
@@ -26,7 +27,9 @@ if normalized_data is None:
 if tf_idf is  None:
 	print("Computing TF-IDF...")
 	tf_idf_vectorizer, docs_tf = get_tfidf_matrix(normalized_data)
-
+if svm_vector is  None:
+	print("Reading in SVM Vector...")
+	##
 
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
@@ -36,11 +39,35 @@ def run_info_retrieval(query):
 	'''
 	RankedCoursesObj = RankedCourses(query)
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(tf_idf_vectorizer,docs_tf)
-	return [course_contents[index] for index in ranked_courses_indeces]
-	# RankedCoursesObj = ElasticsearchRankedCourses(query)
-	# results = RankedCoursesObj.run_query()
-	# results = DB_Access.get_ranked_course_indeces()
-	# return results
+	
+	# dictionary of classes to return
+	each_course_info = []
+
+	# set of class titles that are in [each_course_info]
+	class_titles_unique = set()
+	
+	for index in ranked_courses_indeces:
+		course_name = course_contents[index]['titleLong']
+		# if the course already exists in [each_course_unique]
+		if (course_name in class_titles_unique):
+
+			# find original course in [each_course_info] (generally the last course entered) and
+			# update that class's description to account for a cross-listed class
+			previous_class = each_course_info[len(each_course_info) - 1]
+			cross_list_string = "Cross-listed with " + str(course_contents[index]['subject']) + " " + str(course_contents[index]['catalogNbr'] + ".")
+			each_course_info[len(each_course_info)-1]['description'] = previous_class['description'] + cross_list_string 
+			# now, integrate this into the course descriptions so people can have multiple cross-references
+			# we need to discuss how to approach this as it relates to how we rank our courses
+
+		else:
+			each_course_info.append(course_contents[index])
+			class_titles_unique.add(course_name)
+
+		if (len(each_course_info) == 15):
+			break
+
+	return each_course_info
+	# return [course_contents[index] for index in ranked_courses_index]
 
 def get_user_info():
 	if google_auth.is_logged_in():
@@ -49,6 +76,22 @@ def get_user_info():
 		return name
 	else:
 		return ""
+
+@irsystem.route('/similar/', methods=['GET','POST'])
+def get_similar():
+	courseid = request.args.get('courseid')
+	print("COURSE ID: " + str(courseid))
+	course = [c for c in course_contents if c['crseId']==int(courseid)]
+	print("NAME: " + str(course[0]['titleLong']))
+	results = course_contents[:10]
+
+
+
+	return render_template('search.html', name=project_name, netid=net_id,
+						   output_message="", data=results, query="",
+						   is_logged=google_auth.is_logged_in(), username=get_user_info())
+
+
 
 @irsystem.route('/', methods=['GET'])
 def index():
