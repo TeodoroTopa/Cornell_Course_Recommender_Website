@@ -36,11 +36,29 @@ def run_info_retrieval(query):
 	'''
 	RankedCoursesObj = RankedCourses(query)
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(tf_idf_vectorizer,docs_tf)
-	return [course_contents[index] for index in ranked_courses_indeces]
-	# RankedCoursesObj = ElasticsearchRankedCourses(query)
-	# results = RankedCoursesObj.run_query()
-	# results = DB_Access.get_ranked_course_indeces()
-	# return results
+	
+	# dictionary of classes to return
+	each_course_info = []
+
+	# set of class titles that are in [each_course_info]
+	class_titles_unique = set()
+	
+	for index in ranked_courses_indeces:
+		course_name = course_contents[index]['titleLong']
+		# if the course already exists in [each_course_unique]
+		if (course_name in class_titles_unique):
+			print ("cross-listed with: " + str(course_contents[index]['subject_copy']) + " " + str(course_contents[index]['catalogNbr_copy']))
+			# now, integrate this into the course descriptions so people can have multiple cross-references
+			# we need to discuss how to approach this as it relates to how we rank our courses
+
+		else:
+			each_course_info.append(course_contents[index])
+			class_titles_unique.add(course_name)
+
+		if (len(each_course_info) == 15):
+			break
+
+	return each_course_info
 
 def get_user_info():
 	if google_auth.is_logged_in():

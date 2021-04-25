@@ -22,6 +22,10 @@ class RankedCourses:
 
         self.sorted_indeces = list(np.argsort(sim_array)[::-1])
 
+        # print (self.sorted_indeces)
+
+        # return self.sorted_indeces
+
         # number of courses to be shown as output
         num_courses = 15
 
