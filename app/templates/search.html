@@ -26,6 +26,7 @@
             <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
             {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
             {% else %}{{d['catalogPrereqCoreq']}}</p>
+            <a href="http://localhost:5000/similar/?courseid={{d['crseId']}}">Find Similar Courses</a>
             {% endif %}
         </li>
         {% endfor %}
