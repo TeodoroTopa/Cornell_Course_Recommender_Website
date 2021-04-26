@@ -31,6 +31,42 @@ if svm_vector is  None:
 	print("Reading in SVM Vector...")
 	##
 
+def remove_cross_listings(rankings):
+
+	# dictionary of classes to return
+	each_course_info = []
+
+	# set of class titles that are in [each_course_info]
+	ourId_to_titleLong = dict()
+	
+	for index in rankings:
+		course_name = course_contents[index]['titleLong']
+		course_ourId = course_contents[index]['ourId']
+
+		# if the course already exists in [each_course_unique]
+		if (course_ourId in ourId_to_titleLong.keys()):
+
+			# index to first course in the set where this [ourId] appears
+			list_of_ourIds = []
+			for course in each_course_info:
+				list_of_ourIds.append(course['ourId'])
+			idx = list_of_ourIds.index(course_ourId)
+
+			# then update the description, adding it on to original description
+			previous_class = each_course_info[idx]
+			cross_list_string = " Cross-listed with " + str(course_contents[index]['subject']) + " " + str(course_contents[index]['catalogNbr'] + ".")
+			each_course_info[idx]['description'] = previous_class['description'] + cross_list_string 
+
+		else:
+			each_course_info.append(course_contents[index])
+			ourId_to_titleLong[course_ourId] = course_name
+
+		if (len(each_course_info) == 15):
+			break
+
+	return each_course_info
+
+
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
 
@@ -39,35 +75,8 @@ def run_info_retrieval(query):
 	'''
 	RankedCoursesObj = RankedCourses(query)
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(tf_idf_vectorizer,docs_tf)
+	return remove_cross_listings(ranked_courses_indeces)
 	
-	# dictionary of classes to return
-	each_course_info = []
-
-	# set of class titles that are in [each_course_info]
-	class_titles_unique = set()
-	
-	for index in ranked_courses_indeces:
-		course_name = course_contents[index]['titleLong']
-		# if the course already exists in [each_course_unique]
-		if (course_name in class_titles_unique):
-
-			# find original course in [each_course_info] (generally the last course entered) and
-			# update that class's description to account for a cross-listed class
-			previous_class = each_course_info[len(each_course_info) - 1]
-			cross_list_string = "Cross-listed with " + str(course_contents[index]['subject']) + " " + str(course_contents[index]['catalogNbr'] + ".")
-			each_course_info[len(each_course_info)-1]['description'] = previous_class['description'] + cross_list_string 
-			# now, integrate this into the course descriptions so people can have multiple cross-references
-			# we need to discuss how to approach this as it relates to how we rank our courses
-
-		else:
-			each_course_info.append(course_contents[index])
-			class_titles_unique.add(course_name)
-
-		if (len(each_course_info) == 15):
-			break
-
-	return each_course_info
-	# return [course_contents[index] for index in ranked_courses_index]
 
 def get_user_info():
 	if google_auth.is_logged_in():
