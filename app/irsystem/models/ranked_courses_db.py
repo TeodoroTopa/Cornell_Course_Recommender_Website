@@ -1,8 +1,4 @@
-"""
-Gets the ranked list of courses based on the cosine similarity measure 
-between the courses (using the subject, catalog number, title, and description 
-of the courses).
-"""
+
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -111,53 +107,4 @@ class DB_Access:
 
         return vectorizer.fit_transform(subj_nbr_title_desc_series).toarray()
 
-    def get_similarity_array(self):
-        """Gets the similarity array.
-        
-        How similar the doc is to the query is determined by the cosine similarity 
-        score.
-        """
-
-        tf_idf = self.get_tfidf_matrix()
-
-        num_docs = len(tf_idf) - 1
-
-        query_array = tf_idf[-1,:]
-        
-        sim_array = np.zeros(num_docs)  # array of similarity scores
-        array_1 = [query_array]
-
-        for i in range(num_docs):
-            
-            array_2 = [tf_idf[i,:]]
-            
-            sim_array[i] = cosine_similarity(array_1, array_2)
-        
-        return sim_array
-        
-
-    def get_ranked_course_indeces(self):
-        """Gets the indices of the ranked courses.
-        """
-
-        sim_array = self.get_similarity_array()
-        self.sorted_indeces = list(np.argsort(sim_array)[::-1])
-
-        # number of courses to be shown as output
-        num_courses = 15
-
-        # the indices of the most similar num_courses courses to the query
-        result = self.sorted_indeces[:num_courses]
-        return [course_contents[index] for index in result]
-
-
-# def main():
-#     query = "language and information"
-#     RankedCoursesObj = RankedCourses(query)
-#     ranked_course_indeces = RankedCoursesObj.get_ranked_course_indeces()
-#     print(ranked_course_indeces)
-
-# if __name__ == "__main__":
-#     main()
-    
 

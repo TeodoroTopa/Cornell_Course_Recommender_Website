@@ -70,24 +70,4 @@ def get_course_data():
             raise
         return []
 
-def get_tfidf_matrix(normalized_data):
-    """Gets the doc term tfidf matrix.
 
-    Each row is for the documents, which include the subject, catalog number,
-    long title, and description of the course, and the last row is for the
-    added query.
-    """
-    subject_col = normalized_data.loc[:, 'subject']
-    catalogNbr_col = normalized_data.loc[:, 'catalogNbr']
-    titleLong_col = normalized_data.loc[:, 'titleLong']
-    description_col = normalized_data.loc[:, 'description']
-
-    # descriptions that correspond to classes that don't have descriptions
-    description_col = description_col.fillna("Not applicable.")
-
-    # the subject, catalogNbr, titleLong, and description put together
-    subj_nbr_title_desc_series = subject_col + " " + catalogNbr_col + " " + titleLong_col + " " + description_col
-
-    vectorizer = TfidfVectorizer(stop_words='english')
-    docs_tfidf = vectorizer.fit_transform(subj_nbr_title_desc_series)
-    return [vectorizer,  docs_tfidf]

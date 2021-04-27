@@ -6,6 +6,7 @@ project_name = "Cornell Course Recommender"
 net_id = "Marina Cheng (mkc236), Joanna Saikali (js3548), Yanchen Zhan (yz366), Mads Christian Berggrein Andersen (mba93), Teodoro Topa (tst42)"
 
 from app.irsystem.models.ranked_courses import RankedCourses
+from app.irsystem.models import ranked_courses
 from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
 from app.irsystem.models.ranked_courses_db import DB_Access
 import pandas as pd
@@ -28,7 +29,7 @@ if normalized_data is None:
 	normalized_data = pd.json_normalize(course_contents)
 if tf_idf is  None:
 	print("Computing TF-IDF...")
-	tf_idf_vectorizer, docs_tf = get_tfidf_matrix(normalized_data)
+	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
 if svm_vector is  None:
 	print("Reading in SVM Vector...")
 	##
@@ -76,7 +77,7 @@ def run_info_retrieval(query):
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
 	RankedCoursesObj = RankedCourses(query)
-	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(tf_idf_vectorizer,docs_tf)
+	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(vectorizer, doc_term_tfidf_matrix)
 	return remove_cross_listings(ranked_courses_indeces)
 	
 

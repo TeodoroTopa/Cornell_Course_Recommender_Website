@@ -1,8 +1,6 @@
 """
 Summary of the course data. The input is the course_data file.
 
-mcheng1
-Apr 11, 2021
 """
 import numpy as np
 import pandas as pd

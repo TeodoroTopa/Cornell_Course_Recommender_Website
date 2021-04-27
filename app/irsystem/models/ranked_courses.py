@@ -24,6 +24,77 @@ class RankedCourses:
         return self.sorted_indeces
         
 
+def get_subj_nbr_title_desc_series(data):
+    """Gets the pandas series of the course subject, catalog number, title, description combined.
+    """
+    subject_col = data.loc[:, 'subject']
+    catalogNbr_col = data.loc[:, 'catalogNbr']
+    titleLong_col = data.loc[:, 'titleLong']
+    description_col = data.loc[:, 'description']
+
+    # descriptions that correspond to classes that don't have descriptions
+    description_col = description_col.fillna("Not applicable.")
+
+    # the subject, catalogNbr, titleLong, and description put together
+    subj_nbr_title_desc_series = subject_col + " " + catalogNbr_col + " " + titleLong_col + " " + description_col
+
+    return subj_nbr_title_desc_series
+
+def get_tfidf_matrix(data):
+    """Gets the doc term tfidf matrix, with both unigrams and bigrams.
+
+    Each row is for the documents, which include the subject, catalog number,
+    long title, and description of the course, and the last row is for the
+    added query.
+    """
+    
+    subj_nbr_title_desc_series = get_subj_nbr_title_desc_series(data)
+
+    vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))
+    doc_term_tfidf_matrix = vectorizer.fit_transform(subj_nbr_title_desc_series)
+    return [vectorizer,  doc_term_tfidf_matrix]
+
+
+def get_similarity_array():
+    """Gets the similarity array.
+    
+    How similar the doc is to the query is determined by the cosine similarity 
+    score.
+    """
+
+    tf_idf = self.get_tfidf_matrix()
+
+    num_docs = len(tf_idf) - 1
+
+    query_array = tf_idf[-1,:]
+        
+    sim_array = np.zeros(num_docs)  # array of similarity scores
+    array_1 = [query_array]
+
+    for i in range(num_docs):
+            
+        array_2 = [tf_idf[i,:]]
+            
+        sim_array[i] = cosine_similarity(array_1, array_2)
+        
+    return sim_array
+        
+
+def get_ranked_course_indeces():
+    """Gets the indices of the ranked courses.
+    """
+
+    sim_array = self.get_similarity_array()
+    self.sorted_indeces = list(np.argsort(sim_array)[::-1])
+
+    # number of courses to be shown as output
+    num_courses = 15
+
+    # the indices of the most similar num_courses courses to the query
+    result = self.sorted_indeces[:num_courses]
+    return [course_contents[index] for index in result]
+
+
 def main():
     query = "language and information"
     RankedCoursesObj = RankedCourses(query)
