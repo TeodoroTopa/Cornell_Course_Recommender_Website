@@ -39,16 +39,16 @@ if tf_idf is  None:
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
 if terms is  None:
 	print("Reading in SVM Vector...")
-	terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
-	SVM_path = "SVM_pickle_2021SP23.dat"
-	if os.path.isfile(SVM_path):
-		data2 = []
-		with open(SVM_path, "rb") as f:
-			for _ in range(pickle.load(f)):
-				data2.append(pickle.load(f))
-		words_compressed, s, docs_compressed = data2
-	else:
-		words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
+	# terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
+	# SVM_path = "SVM_pickle_2021SP23.dat"
+	# if os.path.isfile(SVM_path):
+	# 	data2 = []
+	# 	with open(SVM_path, "rb") as f:
+	# 		for _ in range(pickle.load(f)):
+	# 			data2.append(pickle.load(f))
+	# 	words_compressed, s, docs_compressed = data2
+	# else:
+	# 	words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
 
 
 def remove_cross_listings(rankings):
@@ -110,6 +110,17 @@ def get_user_info():
 def get_similar():
 	if request.args.get('search'):
 		return redirect(url_for('irsystem.index', search=request.args.get('search')))
+	terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
+	SVM_path = "SVM_pickle_2021SP23.dat"
+	if os.path.isfile(SVM_path):
+		data2 = []
+		with open(SVM_path, "rb") as f:
+			for _ in range(pickle.load(f)):
+				data2.append(pickle.load(f))
+		words_compressed, s, docs_compressed = data2
+	else:
+		words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
+
 	classNbr = request.args.get('classNbr')
 	print("COURSE ID: " + str(classNbr))
 	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
