@@ -21,18 +21,7 @@ class RankedCourses:
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
 
         self.sorted_indeces = list(np.argsort(sim_array)[::-1])
-
-        # print (self.sorted_indeces)
-
         return self.sorted_indeces
-
-        # number of courses to be shown as output
-        # num_courses = 15
-
-        # the indices of the most similar num_courses courses to the query
-        # result = self.sorted_indeces[:num_courses]
-
-        return result
         
 
 def main():
