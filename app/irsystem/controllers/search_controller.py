@@ -9,6 +9,8 @@ from app.irsystem.models.ranked_courses import RankedCourses
 from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
 from app.irsystem.models.ranked_courses_db import DB_Access
 import pandas as pd
+from data_summary.course_data_summary import get_terms_and_TFs
+from machine_learning.singular_value_decomp import find_similar_course
 
 
 from app.accounts.controllers import google_auth
@@ -79,13 +81,65 @@ def get_user_info():
 
 @irsystem.route('/similar/', methods=['GET','POST'])
 def get_similar():
-	courseid = request.args.get('courseid')
-	print("COURSE ID: " + str(courseid))
-	course = [c for c in course_contents if c['crseId']==int(courseid)]
+	classNbr = request.args.get('classNbr')
+	print("COURSE ID: " + str(classNbr))
+	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
+	# print(type(course),course_contents[1])
 	print("NAME: " + str(course[0]['titleLong']))
-	results = course_contents[:10]
+	course_data = pd.DataFrame(course_contents)
+	# print("Course: ",course[0].keys())
+	# print(course[0]['crseId'])
+	# print(course)
+	# course_desc = course[0]['description']
+	# print("Columns: ",course_data.columns,"\n")
+	# print(np.count_nonzero(course_data['crseId'] == int(courseid)),course_data['crseId'] == int(courseid))
+	# idx = np.where(course_data['classNbr'] == int(classNbr))[0][0]
+	# print("TEST IDX",idx)
+	course_desc = course[0]['titleLong'] + " " + course_data[course_data['classNbr'] == int(classNbr)]['description']
+	# print(course_desc)
 
+	# course_desc = course[0]['description']
+	# print(course_data.head())
 
+	###  ML ####
+	terms, terms_TF, doc_term_TF_matrix, vectorizer, new_course_data = get_terms_and_TFs(course_data, max_dfq=.3)
+	similar_courses = find_similar_course(doc_term_TF_matrix, terms, vectorizer, course_desc,dimensions=100)
+	titles = []
+	course_ids = []
+	for sim_course_idx in similar_courses:
+		print("sim_courses:,",similar_courses,similar_courses.shape," and sim_course_idx: ",sim_course_idx,sim_course_idx.shape)
+		# print(course_data.iloc[sim_course_idx][["titleLong"]])
+		print(new_course_data.iloc[sim_course_idx][["titleLong"]],type(new_course_data.iloc[sim_course_idx][["titleLong"]]),len(new_course_data.iloc[sim_course_idx][["titleLong"]]))
+		title = new_course_data.iloc[sim_course_idx][["titleLong"]][0]
+		print("Test :: : : ,",title)
+		if title not in titles:
+			course_ids.append(new_course_data.iloc[sim_course_idx][["crseId"]][0])
+			titles.append(title)
+	# print(similar_courses,type(course_contents),len(course_contents),type(course_contents[0]))
+	# results = [course_contents[course_contents['crseId'] == course_id] for course_id in course_ids]
+	# results = [course_data[course_data['crseId'] == int(course_id)] for course_id in course_ids]
+
+	ordering = dict(zip(course_ids,range(len(course_ids))))
+	results = []
+	alphas = ['a','b',"t","p","r","d","c","i","o","k","x","l","j"]
+	count = 0
+	for c in course_contents:
+		if c['crseId'] in course_ids:
+			# results.append(c)
+			results.append((c,ordering[c['crseId']]))
+			count +=1
+			course_ids.remove(c['crseId'])
+	# print("Before sort: ",results)
+	results = sorted(results, key = lambda x: x[1])
+	results = [result[0] for result in results]
+	# print("After sort: ",results)
+
+	#
+	# ordering = dict(zip(course_ids,range(len(course_ids))))
+	# results = [("should be c",ordering[c['crseId']],c['titleLong']) for c in course_contents if c['crseId'] in course_ids]
+	# results = sorted(results)
+	# print(results)
+	# print(results,type(results))
 
 	return render_template('search.html', name=project_name, netid=net_id,
 						   output_message="", data=results, query="",

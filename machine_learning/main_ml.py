@@ -54,18 +54,21 @@ if __name__ == "__main__":
 
     #Find similar course
     for idx, i in enumerate(range(1, 3000, 600)):
+        i = 1189
         # desc_example = course_desc.iloc[1189]
         desc_example = course_desc.iloc[i]
         print("Input title: ",course_data.iloc[i][["titleLong"]][0]," . Input description",desc_example[0])
         similar_courses = find_similar_course(doc_term_TF_matrix, terms, vectorizer, desc_example,dimensions=150)
         titles = []
+        course_ids = []
         for sim_course_idx in similar_courses:
             # print(course_data.iloc[sim_course_idx][["titleLong"]])
             title = new_course_data.iloc[sim_course_idx][["titleLong"]][0]
+            course_ids.append(new_course_data.iloc[sim_course_idx][["crseId"]][0])
             if title not in titles:
                 titles.append(title)
                 print(len(titles),".",title)
-
+        print(similar_courses)
     # Find similar course with RMP
     # for idx, i in enumerate(range(1, 3000, 1000)):
     #     # desc_example = course_desc.iloc[1189]

@@ -25,7 +25,7 @@ def find_similar_course(doc_term_TF_matrix=None, terms=None, vectorizer=None, de
     #     vectorizer = TfidfVectorizer(stop_words='english', max_df=.8,min_df=2)
     #     doc_term_TF_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
-    SVM_path = "SVM_pickle_2021SP.dat"
+    SVM_path = "SVM_pickle_2021SP23.dat"
     if os.path.isfile(SVM_path):
         data2 = []
         with open(SVM_path, "rb") as f:
@@ -42,9 +42,11 @@ def find_similar_course(doc_term_TF_matrix=None, terms=None, vectorizer=None, de
 
 
     vec_desc = vectorizer.transform(desc_example)
+    print("SHAPES. vec_desc:{} words_compressed {}".format(vec_desc.shape,words_compressed.shape))
     svm_vec_desc = vec_desc @ words_compressed.T
 
     results = neigh.kneighbors(svm_vec_desc, return_distance=False)
+    print("result shape",results.shape)
     return results.squeeze()
     #SVM with feedforward selection?
     #Use all features RMP
