@@ -16,7 +16,7 @@ def save_SVM_pickle(words_compressed,s,docs_compressed ):
             pickle.dump(value, f)
 
 
-def find_similar_course(doc_term_TF_matrix=None, terms=None, vectorizer=None, desc_example=None,documents=None,dimensions = 100):
+def find_similar_course(vectorizer=None, desc_example=None, docs_compressed=None, words_compressed=None):
     #From a title and description of course retrieve similar courses
     #Methodology: Perform SVD on ratemyproffesor data and course_desc
     #Identify the particular course, that you want to find similar ones for.
@@ -25,21 +25,9 @@ def find_similar_course(doc_term_TF_matrix=None, terms=None, vectorizer=None, de
     #     vectorizer = TfidfVectorizer(stop_words='english', max_df=.8,min_df=2)
     #     doc_term_TF_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 
-    SVM_path = "SVM_pickle_2021SP23.dat"
-    if os.path.isfile(SVM_path):
-        data2 = []
-        with open(SVM_path, "rb") as f:
-            for _ in range(pickle.load(f)):
-                data2.append(pickle.load(f))
-        words_compressed, s, docs_compressed = data2
-    else:
-        words_compressed,s,docs_compressed = SVM_decomp(dimensions = 100,matrix=doc_term_TF_matrix,vectorizer=vectorizer)
-
 
     neigh = NearestNeighbors(n_neighbors=20)
     neigh.fit(docs_compressed.T)
-
-
 
     vec_desc = vectorizer.transform(desc_example)
     print("SHAPES. vec_desc:{} words_compressed {}".format(vec_desc.shape,words_compressed.shape))

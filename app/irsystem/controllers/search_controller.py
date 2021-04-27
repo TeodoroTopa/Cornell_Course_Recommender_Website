@@ -10,8 +10,10 @@ from app.irsystem.models import ranked_courses
 from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
 from app.irsystem.models.ranked_courses_db import DB_Access
 import pandas as pd
+import os
+import pickle
 from data_summary.course_data_summary import get_terms_and_TFs
-from machine_learning.singular_value_decomp import find_similar_course
+from machine_learning.singular_value_decomp import find_similar_course, SVM_decomp
 
 
 from app.accounts.controllers import google_auth
@@ -19,8 +21,13 @@ from app.accounts.controllers import google_auth
 course_contents = []
 normalized_data  = None
 tf_idf = None
-svm_vector = None
-
+terms = None
+terms_TF = None
+doc_term_TF_matrix = None
+vectorizerML = None
+new_course_data = None
+words_compressed = None
+docs_compressed = None
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
@@ -30,9 +37,19 @@ if normalized_data is None:
 if tf_idf is  None:
 	print("Computing TF-IDF...")
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
-if svm_vector is  None:
+if terms is  None:
 	print("Reading in SVM Vector...")
-	##
+	terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
+	SVM_path = "SVM_pickle_2021SP23.dat"
+	if os.path.isfile(SVM_path):
+		data2 = []
+		with open(SVM_path, "rb") as f:
+			for _ in range(pickle.load(f)):
+				data2.append(pickle.load(f))
+		words_compressed, s, docs_compressed = data2
+	else:
+		words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
+
 
 def remove_cross_listings(rankings):
 
@@ -91,6 +108,8 @@ def get_user_info():
 
 @irsystem.route('/similar/', methods=['GET','POST'])
 def get_similar():
+	if request.args.get('search'):
+		return redirect(url_for('irsystem.index', search=request.args.get('search')))
 	classNbr = request.args.get('classNbr')
 	print("COURSE ID: " + str(classNbr))
 	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
@@ -105,15 +124,16 @@ def get_similar():
 	# print(np.count_nonzero(course_data['crseId'] == int(courseid)),course_data['crseId'] == int(courseid))
 	# idx = np.where(course_data['classNbr'] == int(classNbr))[0][0]
 	# print("TEST IDX",idx)
-	course_desc = course[0]['titleLong'] + " " + course_data[course_data['classNbr'] == int(classNbr)]['description']
+	desc = "" if course[0]['description'] is None else course[0]['description']
+	course_desc = pd.DataFrame({"description":[course[0]['titleLong'] + " " +desc]})["description"]
+	#course_desc = course[0]['titleLong'] + " " + course_data[course_data['classNbr'] == int(classNbr)]['description']
 	# print(course_desc)
 
 	# course_desc = course[0]['description']
 	# print(course_data.head())
 
 	###  ML ####
-	terms, terms_TF, doc_term_TF_matrix, vectorizer, new_course_data = get_terms_and_TFs(course_data, max_dfq=.3)
-	similar_courses = find_similar_course(doc_term_TF_matrix, terms, vectorizer, course_desc,dimensions=100)
+	similar_courses = find_similar_course(vectorizerML, course_desc, docs_compressed, words_compressed)
 	titles = []
 	course_ids = []
 	for sim_course_idx in similar_courses:
@@ -151,8 +171,8 @@ def get_similar():
 	# print(results)
 	# print(results,type(results))
 
-	return render_template('search.html', name=project_name, netid=net_id,
-						   output_message="", data=results, query="",
+	return render_template('similar.html', name=project_name, netid=net_id,
+						   output_message="", data=results, query="", crse=course[0],
 						   is_logged=google_auth.is_logged_in(), username=get_user_info())
 
 
