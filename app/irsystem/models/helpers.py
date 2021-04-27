@@ -8,7 +8,9 @@ import botocore
 from botocore import UNSIGNED
 from botocore.config import Config
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+from io import BytesIO
+import os
+import pickle
 def http_json(result, bool):
 	result.update({ "success": bool })
 	return jsonify(result)
@@ -71,3 +73,13 @@ def get_course_data():
         return []
 
 
+def get_svm_data(picklepath = "docs_compressed.pkl"):
+    BUCKET_NAME = 'cornell-course-data-bucket'
+
+    s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+    with BytesIO() as data:
+        s3.download_fileobj(BUCKET_NAME, picklepath, data)
+        data.seek(0)
+        loaded = pickle.load(data)
+
+    return loaded

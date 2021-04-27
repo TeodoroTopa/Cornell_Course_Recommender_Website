@@ -10,11 +10,9 @@ from app.irsystem.models import ranked_courses
 from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
 from app.irsystem.models.ranked_courses_db import DB_Access
 import pandas as pd
-import os
-import pickle
 from data_summary.course_data_summary import get_terms_and_TFs
 from machine_learning.singular_value_decomp import find_similar_course, SVM_decomp
-
+import pickle
 
 from app.accounts.controllers import google_auth
 
@@ -37,19 +35,6 @@ if normalized_data is None:
 if doc_term_tfidf_matrix is  None:
 	print("Computing TF-IDF...")
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
-# if terms is  None:
-# 	print("Reading in SVM Vector...")
-	# terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
-	# SVM_path = "SVM_pickle_2021SP23.dat"
-	# if os.path.isfile(SVM_path):
-	# 	data2 = []
-	# 	with open(SVM_path, "rb") as f:
-	# 		for _ in range(pickle.load(f)):
-	# 			data2.append(pickle.load(f))
-	# 	words_compressed, s, docs_compressed = data2
-	# else:
-	# 	words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
-
 
 def remove_cross_listings(rankings):
 
@@ -111,16 +96,13 @@ def get_similar():
 	if request.args.get('search'):
 		return redirect(url_for('irsystem.index', search=request.args.get('search')))
 	terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
-	SVM_path = "SVM_pickle_2021SP23.dat"
-	if os.path.isfile(SVM_path):
-		data2 = []
-		with open(SVM_path, "rb") as f:
-			for _ in range(pickle.load(f)):
-				data2.append(pickle.load(f))
-		words_compressed, s, docs_compressed = data2
-	else:
-		words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
 
+	# words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
+	# pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
+	# pickle.dump(docs_compressed, open("docs_compressed.pkl", "wb"))
+
+	words_compressed = get_svm_data("words_compressed.pkl")
+	docs_compressed = get_svm_data("docs_compressed.pkl")
 	classNbr = request.args.get('classNbr')
 	print("COURSE ID: " + str(classNbr))
 	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
