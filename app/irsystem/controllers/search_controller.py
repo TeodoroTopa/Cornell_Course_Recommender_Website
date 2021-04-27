@@ -20,25 +20,25 @@ from app.accounts.controllers import google_auth
 
 course_contents = []
 normalized_data  = None
-tf_idf = None
-terms = None
-terms_TF = None
-doc_term_TF_matrix = None
-vectorizerML = None
-new_course_data = None
-words_compressed = None
-docs_compressed = None
+doc_term_tfidf_matrix = None
+# terms = None
+# terms_TF = None
+# doc_term_TF_matrix = None
+# vectorizerML = None
+# new_course_data = None
+# words_compressed = None
+# docs_compressed = None
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
 if normalized_data is None:
 	print("Normalizing data...")
 	normalized_data = pd.json_normalize(course_contents)
-if tf_idf is  None:
+if doc_term_tfidf_matrix is  None:
 	print("Computing TF-IDF...")
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
-if terms is  None:
-	print("Reading in SVM Vector...")
+# if terms is  None:
+# 	print("Reading in SVM Vector...")
 	# terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
 	# SVM_path = "SVM_pickle_2021SP23.dat"
 	# if os.path.isfile(SVM_path):
