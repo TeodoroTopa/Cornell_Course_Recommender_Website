@@ -111,7 +111,7 @@ def phi_rate_my_prof(data,columns_included = ['prof_name','prof_dept','class_nam
 #     return data
 
 
-def get_terms_and_TFs(data,max_dfq=1,rmp=False):
+def get_terms_and_TFs(data,max_dfq=1,rmp=False, returntf=True):
     """Gets the terms and the TFs of the terms.
 
     Stop words are not used.
@@ -134,18 +134,19 @@ def get_terms_and_TFs(data,max_dfq=1,rmp=False):
     # where each element corresponds to a term
     terms_TF = np.sum(term_doc_TF_matrix, axis=1)  # the TF of the terms
 
-    terms = vectorizer.get_feature_names()  # the terms
-    
-    num_terms = len(terms)
-    print("Number of terms among descriptions:", num_terms)
+    # terms = vectorizer.get_feature_names()  # the terms
+    # num_terms = len(terms)
+    # print("Number of terms among descriptions:", num_terms)
+    #
+    # num_terms_mult_occ = len(terms_TF) - sum(terms_TF == 1)
+    # print("Number of terms that occur more than once:", num_terms_mult_occ)
 
-    num_terms_mult_occ = len(terms_TF) - sum(terms_TF == 1)
-    print("Number of terms that occur more than once:", num_terms_mult_occ)
-    if max_dfq != 1:
-        return (terms, terms_TF,doc_term_TF_matrix,vectorizer,data.loc[description_col.index,:])
+    if max_dfq != 1 and returntf:
+        return (terms_TF,doc_term_TF_matrix,vectorizer,data.loc[description_col.index,:])
+    elif max_dfq != 1 and not returntf:
+        return (vectorizer,data.loc[description_col.index,:])
 
-    return (terms, terms_TF)
-
+    return terms_TF
 
 def produce_plot(data, terms, terms_TF):
     """Produces the plot of the course description term frequencies of the top terms.

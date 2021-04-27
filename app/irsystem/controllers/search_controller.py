@@ -17,8 +17,8 @@ import pickle
 from app.accounts.controllers import google_auth
 
 course_contents = []
-normalized_data  = None
 doc_term_tfidf_matrix = None
+vectorizer = None
 # terms = None
 # terms_TF = None
 # doc_term_TF_matrix = None
@@ -29,11 +29,9 @@ doc_term_tfidf_matrix = None
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
-if normalized_data is None:
-	print("Normalizing data...")
-	normalized_data = pd.json_normalize(course_contents)
 if doc_term_tfidf_matrix is  None:
 	print("Computing TF-IDF...")
+	normalized_data = pd.json_normalize(course_contents)
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
 
 def remove_cross_listings(rankings):
@@ -71,7 +69,6 @@ def remove_cross_listings(rankings):
 
 	return each_course_info
 
-
 def run_info_retrieval(query):
 	''' To be replaced with actual query results
 
@@ -95,7 +92,8 @@ def get_user_info():
 def get_similar():
 	if request.args.get('search'):
 		return redirect(url_for('irsystem.index', search=request.args.get('search')))
-	terms, terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
+	vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3, returntf=False)
+	# terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
 
 	# words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
 	# pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
@@ -103,6 +101,7 @@ def get_similar():
 
 	words_compressed = get_svm_data("words_compressed.pkl")
 	docs_compressed = get_svm_data("docs_compressed.pkl")
+
 	classNbr = request.args.get('classNbr')
 	print("COURSE ID: " + str(classNbr))
 	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
