@@ -21,7 +21,11 @@
         {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
         {% else %}{{d['catalogPrereqCoreq']}}</p>
         {% endif %}
-        <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a> <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+        <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a> 
+        
+        <!-- CHANGE THIS TO REFLECT THE STATE OF THE DATABASE - if a course is saved or not -->
+        <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+        
     </li>
     {% endfor %}
 </ol>
@@ -29,7 +33,7 @@
 <ol id='search_results'>
     <li class=searchresult>
         <p style="text-align:center;"><strong>No Classes Saved</strong></p>
-        <p style="text-align:center;">Search for a Class on Homepage!</p>
+        <p style="text-align:center;"><a href="/">Search for a Class on Homepage!</a></p>
     </li>
 </ol>
 {% endif %}

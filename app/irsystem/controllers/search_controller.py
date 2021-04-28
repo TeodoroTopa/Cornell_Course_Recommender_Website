@@ -294,9 +294,4 @@ def save_course():
 		cur.close()
 		conn.close()
 
-		# return back to initial line, passing through a "saved" parameter to 
-		# determine if a course should be unsaved
-
-		# need to return template back to initial state, with link changed to "unsave"
-		# return redirect(url_for('irsystem.save_course'))
 		return redirect(request.referrer)
