@@ -264,7 +264,7 @@ def save_course():
 	if not (google_auth.is_logged_in()):
 		return redirect(url_for('accounts.login'))
 
-	else:
+	else: # make the change in here
 		ourId = request.args.get('ourId')
 		email = get_user_email()
 
@@ -285,4 +285,5 @@ def save_course():
 		# determine if a course should be unsaved
 
 		# need to return template back to initial state, with link changed to "unsave"
-		return render_template('search.html')
+		# return redirect(url_for('irsystem.save_course'))
+		return redirect(request.referrer)
