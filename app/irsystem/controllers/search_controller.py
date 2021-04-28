@@ -51,7 +51,46 @@ if doc_term_tfidf_matrix is None:
 	normalized_data = pd.json_normalize(course_contents)
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
 
+def get_user_info():
+	if google_auth.is_logged_in():
+		user_info = google_auth.get_user_info()
+		name = user_info['given_name']
+		return name
+	else:
+		return ""
+
+def get_user_email():
+	if google_auth.is_logged_in():
+		user_info = google_auth.get_user_info()
+		email = user_info["email"]
+		return email
+	else:
+		return ""
+
+def get_saved_classes(email):
+	conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)
+	conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+	cur = conn.cursor()
+	result = []
+
+	if (email != ""):
+		sql = "SELECT * FROM saved_classes WHERE email=\'" + email + "\';"
+		cur.execute(sql)
+		result = cur.fetchall()
+		conn.commit()
+	
+	cur.close()
+	conn.close()
+
+	ret = []
+	print (result)
+	for (x,y) in result:
+		ret.append(y)
+	return ret
+
 def remove_cross_listings(rankings):
+
+	user_saved_classes = get_saved_classes(get_user_email())
 
 	# dictionary of classes to return
 	each_course_info = []
@@ -79,9 +118,24 @@ def remove_cross_listings(rankings):
 				each_course_info[idx]['description'] = previous_class['description'] + cross_list_string 
 
 		else:
-			each_course_info.append(course_contents[index])
+			some_course = course_contents[index]
+			
+			if (user_saved_classes != []):
+				if (some_course['ourId'] in user_saved_classes):
+					some_course['saved'] = True
+				else:
+					some_course['saved'] = False
+			else:
+				some_course['saved'] = False	
+			
+			if (course_name == "Language and Information"):
+				if (not "(Sponsored by the course staff :P) " in some_course['description']):
+					some_course['description'] = "(Sponsored by the course staff :P) " + some_course['description']
+				each_course_info.insert(0,some_course)
+			else:
+				each_course_info.append(some_course)
 			ourId_to_titleLong[course_ourId] = course_name
-		
+
 		if (len(each_course_info) == 15):
 			break
 
@@ -96,22 +150,6 @@ def run_info_retrieval(query):
 	RankedCoursesObj = RankedCourses(query)
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(vectorizer, doc_term_tfidf_matrix)
 	return remove_cross_listings(ranked_courses_indeces)
-	
-def get_user_info():
-	if google_auth.is_logged_in():
-		user_info = google_auth.get_user_info()
-		name = user_info['given_name']
-		return name
-	else:
-		return ""
-
-def get_user_email():
-	if google_auth.is_logged_in():
-		user_info = google_auth.get_user_info()
-		email = user_info["email"]
-		return email
-	else:
-		return ""
 
 @irsystem.route('/similar/', methods=['GET','POST'])
 def get_similar():
@@ -196,6 +234,11 @@ def get_similar():
 	results = sorted(results, key = lambda x: x[1])
 	results = [result[0] for result in results]
 	# print("After sort: ",results)
+
+	'''
+	HERE - for each line in results, add a dictionary entry on whether
+	some user has saved the class or not
+	'''
 
 	#
 	# ordering = dict(zip(course_ids,range(len(course_ids))))
