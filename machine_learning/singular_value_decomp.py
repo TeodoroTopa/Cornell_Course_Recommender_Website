@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
 from sklearn.neighbors import NearestNeighbors
-import pickle,os
+import pickle,os,sys
 
 def save_SVM_pickle(words_compressed,s,docs_compressed ):
     data_SVM = [words_compressed,s,docs_compressed]
@@ -16,7 +16,7 @@ def save_SVM_pickle(words_compressed,s,docs_compressed ):
             pickle.dump(value, f)
 
 
-def find_similar_course(vectorizer=None, desc_example=None, docs_compressed=None, words_compressed=None):
+def find_similar_course(svd_index=None, docs_compressed=None, words_compressed=None):
     #From a title and description of course retrieve similar courses
     #Methodology: Perform SVD on ratemyproffesor data and course_desc
     #Identify the particular course, that you want to find similar ones for.
@@ -29,11 +29,13 @@ def find_similar_course(vectorizer=None, desc_example=None, docs_compressed=None
     neigh = NearestNeighbors(n_neighbors=20)
     neigh.fit(docs_compressed.T)
 
-    vec_desc = vectorizer.transform(desc_example)
-    print("SHAPES. vec_desc:{} words_compressed {}".format(vec_desc.shape,words_compressed.shape))
-    svm_vec_desc = vec_desc @ words_compressed.T
-
-    results = neigh.kneighbors(svm_vec_desc, return_distance=False)
+    # vec_desc = vectorizer.transform(desc_example)
+    # print("SHAPES. vec_desc:{} words_compressed {}".format(vec_desc.shape,words_compressed.shape))
+    # svm_vec_desc = vec_desc @ words_compressed.T
+    input = np.array(docs_compressed).T[svd_index].reshape(1, -1)
+    print("shapes just before knn",input.shape,docs_compressed.T[0].shape)
+    results = neigh.kneighbors(input, return_distance=False)
+    del neigh
     print("result shape",results.shape)
     return results.squeeze()
     #SVM with feedforward selection?
@@ -48,7 +50,7 @@ def find_similar_course(vectorizer=None, desc_example=None, docs_compressed=None
 
 def SVM_decomp(dimensions = 100,matrix=None,vectorizer=None):
     """ matrix is doc_term_TF_matrix"""
-    # u, s, v_trans = svds(matrix.astype(float), k=100)
+    # u, s, v_trans = svds(matrix.astype(float), k=300)
     # print(u.shape)
     # print(s.shape)
     # print(v_trans.shape)

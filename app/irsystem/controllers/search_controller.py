@@ -93,26 +93,34 @@ def get_user_info():
 def get_similar():
 	if request.args.get('search'):
 		return redirect(url_for('irsystem.index', search=request.args.get('search')))
-	vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3, returntf=False)
-	# terms_TF, doc_term_TF_matrix, vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3)
+	print("length:",len(course_contents))
+	# vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3, returntf=False)
+	_, doc_term_TF_matrix, vectorizerML, _ = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.5)
 
-	# words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
-	# pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
-	# pickle.dump(docs_compressed, open("docs_compressed.pkl", "wb"))
+	words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
+	pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
+	pickle.dump(docs_compressed, open("docs_compressed.pkl", "wb"))
 
-	words_compressed = get_svm_data("words_compressed.pkl")
-	docs_compressed = get_svm_data("docs_compressed.pkl")
-	print("WORDS SIZE: "+ str(sys.getsizeof(words_compressed)))
-	print("DOCS SIZE: "+ str(sys.getsizeof(docs_compressed)))
-	print("vectorizerML SIZE: "+ str(sys.getsizeof(vectorizerML)))
-	print("new_course_data SIZE: "+ str(sys.getsizeof(new_course_data)))
+	# words_compressed = get_svm_data("words_compressed.pkl")
+	# docs_compressed = get_svm_data("docs_compressed.pkl")
+	# print("WORDS SIZE: "+ str(sys.getsizeof(words_compressed)))
+	# print("DOCS SIZE: "+ str(sys.getsizeof(docs_compressed)))
+	# print("vectorizerML SIZE: "+ str(sys.getsizeof(vectorizerML)))
+	# print("new_course_data SIZE: "+ str(sys.getsizeof(new_course_data)))
 
 	classNbr = request.args.get('classNbr')
 	print("COURSE ID: " + str(classNbr))
+	course_classNbrs = [c['classNbr'] for c in course_contents if c['description'] != None]
+	mapping_to_new_idx = [idx for idx,c in enumerate(course_contents) if c['description'] != None]
+
+
 	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
+	course_classNbr = course[0]['classNbr']
+	svm_idx = np.where(course_classNbr==np.array(course_classNbrs))[0][0]
+	print("svd index: ",svm_idx)
 	# print(type(course),course_contents[1])
-	print("NAME: " + str(course[0]['titleLong']))
-	course_data = pd.DataFrame(course_contents)
+	# print("NAME: " + str(course[0]['titleLong']))
+	# course_data = pd.DataFrame(course_contents)
 	# print("Course: ",course[0].keys())
 	# print(course[0]['crseId'])
 	# print(course)
@@ -121,8 +129,8 @@ def get_similar():
 	# print(np.count_nonzero(course_data['crseId'] == int(courseid)),course_data['crseId'] == int(courseid))
 	# idx = np.where(course_data['classNbr'] == int(classNbr))[0][0]
 	# print("TEST IDX",idx)
-	desc = "" if course[0]['description'] is None else course[0]['description']
-	course_desc = pd.DataFrame({"description":[" " +desc]})["description"]
+	# desc = "" if course[0]['description'] is None else course[0]['description']
+	# course_desc = pd.DataFrame({"description":[" " +desc]})["description"]
 
 	#course_desc = course[0]['titleLong'] + " " + course_data[course_data['classNbr'] == int(classNbr)]['description']
 	# print(course_desc)
@@ -131,32 +139,35 @@ def get_similar():
 	# print(course_data.head())
 
 	###  ML ####
-	similar_courses = find_similar_course(vectorizerML, course_desc, docs_compressed, words_compressed)
-	titles = []
-	course_ids = []
+	similar_courses = find_similar_course(svm_idx, docs_compressed, words_compressed)
+	titles = [course[0]['titleLong']]
+	classNbrs = []
 	for sim_course_idx in similar_courses:
-		print("sim_courses:,",similar_courses,similar_courses.shape," and sim_course_idx: ",sim_course_idx,sim_course_idx.shape)
+		print("sim_course_idx: ",sim_course_idx,sim_course_idx.shape)
 		# print(course_data.iloc[sim_course_idx][["titleLong"]])
-		print(new_course_data.iloc[sim_course_idx][["titleLong"]],type(new_course_data.iloc[sim_course_idx][["titleLong"]]),len(new_course_data.iloc[sim_course_idx][["titleLong"]]))
-		title = new_course_data.iloc[sim_course_idx][["titleLong"]][0]
+		# print(course_contents[sim_course_idx]["titleLong"],type(course_contents[sim_course_idx]["titleLong"]),len(course_contents[sim_course_idx]["titleLong"]))
+		new_sim_idx = mapping_to_new_idx[sim_course_idx]
+		title = course_contents[new_sim_idx]["titleLong"]
 		print("Test :: : : ,",title)
 		if title not in titles:
-			course_ids.append(new_course_data.iloc[sim_course_idx][["crseId"]][0])
+			classNbrs.append( int(course_contents[new_sim_idx]["classNbr"]))
 			titles.append(title)
+		# print("course_id",classNbrs[-1])
 	# print(similar_courses,type(course_contents),len(course_contents),type(course_contents[0]))
-	# results = [course_contents[course_contents['crseId'] == course_id] for course_id in course_ids]
+	# results = [c for c in course_contents if c['classNbr'] in classNbrs]
+	# results = [course_contents[course_contents['classNbr'] == classNbr] for classNbr in classNbrs]
 	# results = [course_data[course_data['crseId'] == int(course_id)] for course_id in course_ids]
 
-	ordering = dict(zip(course_ids,range(len(course_ids))))
+	ordering = dict(zip(classNbrs,range(len(classNbrs))))
 	results = []
 	alphas = ['a','b',"t","p","r","d","c","i","o","k","x","l","j"]
 	count = 0
 	for c in course_contents:
-		if c['crseId'] in course_ids:
+		if c['classNbr'] in classNbrs:
 			# results.append(c)
-			results.append((c,ordering[c['crseId']]))
+			results.append((c,ordering[c['classNbr']]))
 			count +=1
-			course_ids.remove(c['crseId'])
+			classNbrs.remove(c['classNbr'])
 	# print("Before sort: ",results)
 	results = sorted(results, key = lambda x: x[1])
 	results = [result[0] for result in results]
