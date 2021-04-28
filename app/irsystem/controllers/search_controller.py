@@ -29,7 +29,7 @@ vectorizer = None
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
-if doc_term_tfidf_matrix is  None:
+if doc_term_tfidf_matrix is None:
 	print("Computing TF-IDF...")
 	normalized_data = pd.json_normalize(course_contents)
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
@@ -58,7 +58,8 @@ def remove_cross_listings(rankings):
 			# then update the description, adding it on to original description
 			previous_class = each_course_info[idx]
 			cross_list_string = " Cross-listed with " + str(course_contents[index]['subject']) + " " + str(course_contents[index]['catalogNbr'] + ".")
-			each_course_info[idx]['description'] = previous_class['description'] + cross_list_string 
+			if (each_course_info[idx]['description'].find(cross_list_string) == -1):
+				each_course_info[idx]['description'] = previous_class['description'] + cross_list_string 
 
 		else:
 			each_course_info.append(course_contents[index])
@@ -188,3 +189,14 @@ def saved():
 		return render_template('saved.html', is_logged=True, username=google_auth.get_user_info()['given_name'])
 	else:
 		return redirect(url_for('accounts.login'))
+
+@irsystem.route('/save_course', methods=['GET'])
+def save_course():
+	if not (google_auth.is_logged_in()):
+		return redirect(url_for('accounts.login'))
+	else:
+		classNbr = request.args.get('classNbr')
+		
+
+		# beware of the links and how you pass information in
+		return render_template('index.html') 
