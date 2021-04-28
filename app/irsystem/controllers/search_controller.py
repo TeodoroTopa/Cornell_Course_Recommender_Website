@@ -194,7 +194,6 @@ def get_similar():
 						   is_logged=google_auth.is_logged_in(), username=get_user_info())
 
 
-
 @irsystem.route('/', methods=['GET'])
 def index():
 	query = request.args.get('search')
@@ -208,12 +207,38 @@ def index():
 							   output_message=output_message, data=data, query=query,
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 
+
 @irsystem.route('/saved', methods=['GET'])
 def saved():
 	if google_auth.is_logged_in():
-		return render_template('saved.html', is_logged=True, username=google_auth.get_user_info()['given_name'])
+		
+		email = get_user_email()
+
+		conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)
+		conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+		cur = conn.cursor()
+
+		sql = "SELECT ourId FROM saved_classes WHERE email=\'" + email + "\';"
+		cur.execute(sql)
+		result = cur.fetchall()
+		print (result)
+
+		conn.commit()
+
+		cur.close()
+		conn.close()
+
+		if (result == []):
+			print ("empty")
+			return render_template('saved.html')
+		else:
+			# extract data of classes saved, loaded into [data]
+			# data = []
+			return render_template('saved.html', is_logged=True, data=data, username=google_auth.get_user_info()['given_name'])
+	
 	else:
 		return redirect(url_for('accounts.login'))
+
 
 @irsystem.route('/save_course', methods=['GET'])
 def save_course():

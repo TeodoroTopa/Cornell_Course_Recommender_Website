@@ -5,5 +5,25 @@
 {% endblock %}
 
 {% block content %}
+<img id= 'touchdown' src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
 
+{% if data %}
+<ol id='search_results'>
+        {% for d in data %}
+        <li class=searchresult>
+            <h2 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h2>
+            <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
+            <p class='coursedescription'><strong>Description:</strong>
+            {% if d['description'] %}{{d['description']}}</p>
+            {% else %}No description is available at this time. Sorry!</p>
+            {% endif %}
+            <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
+            {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
+            {% else %}{{d['catalogPrereqCoreq']}}</p>
+            {% endif %}
+            <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a> <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+        </li>
+        {% endfor %}
+</ol>
+{% endif %}
 {% endblock %}
