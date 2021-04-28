@@ -7,8 +7,6 @@ net_id = "Marina Cheng (mkc236), Joanna Saikali (js3548), Yanchen Zhan (yz366), 
 
 from app.irsystem.models.ranked_courses import RankedCourses
 from app.irsystem.models import ranked_courses
-from app.irsystem.models.elasticsearch_ranked_courses import ElasticsearchRankedCourses
-from app.irsystem.models.ranked_courses_db import DB_Access
 import pandas as pd
 from data_summary.course_data_summary import get_terms_and_TFs
 from machine_learning.singular_value_decomp import find_similar_course, SVM_decomp
@@ -16,6 +14,20 @@ import pickle
 import sys
 
 from app.accounts.controllers import google_auth
+
+import os
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from sqlalchemy.engine.url import make_url
+''' connect to database '''
+''' note that these credentials may need to change '''
+DATABASE_URL = os.environ['DATABASE_URL']
+url = make_url(DATABASE_URL)
+DB_NAME = url.database
+DB_PORT = url.port
+DB_USER = url.username
+DB_PASS = url.password
+DB_HOST = url.host
 
 course_contents = []
 doc_term_tfidf_matrix = None
@@ -65,7 +77,7 @@ def remove_cross_listings(rankings):
 		else:
 			each_course_info.append(course_contents[index])
 			ourId_to_titleLong[course_ourId] = course_name
-
+		
 		if (len(each_course_info) == 15):
 			break
 
@@ -81,12 +93,19 @@ def run_info_retrieval(query):
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(vectorizer, doc_term_tfidf_matrix)
 	return remove_cross_listings(ranked_courses_indeces)
 	
-
 def get_user_info():
 	if google_auth.is_logged_in():
 		user_info = google_auth.get_user_info()
 		name = user_info['given_name']
 		return name
+	else:
+		return ""
+
+def get_user_email():
+	if google_auth.is_logged_in():
+		user_info = google_auth.get_user_info()
+		email = user_info["email"]
+		return email
 	else:
 		return ""
 
@@ -200,9 +219,26 @@ def saved():
 def save_course():
 	if not (google_auth.is_logged_in()):
 		return redirect(url_for('accounts.login'))
-	else:
-		classNbr = request.args.get('classNbr')
-		
 
-		# beware of the links and how you pass information in
-		return render_template('index.html') 
+	else:
+		ourId = request.args.get('ourId')
+		email = get_user_email()
+
+		# add this class's ourId to database, along with user's name
+		conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)
+		conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+		cur = conn.cursor()
+		
+		sql = "INSERT INTO saved_classes VALUES (\'" + email + "\', " + ourId + ");"
+		print (sql)
+		cur.execute(sql)
+		conn.commit()
+		
+		cur.close()
+		conn.close()
+
+		# return back to initial line, passing through a "saved" parameter to 
+		# determine if a course should be unsaved
+
+		# need to return template back to initial state, with link changed to "unsave"
+		return render_template('search.html')

@@ -27,7 +27,7 @@
             {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
             {% else %}{{d['catalogPrereqCoreq']}}</p>
             {% endif %}
-            <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a> <a href="{{ url_for('irsystem.save_course', classNbr=d['classNbr']) }}">Save Course</a>
+            <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a> <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
         </li>
         {% endfor %}
 </ol>
