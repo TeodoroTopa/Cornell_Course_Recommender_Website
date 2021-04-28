@@ -26,8 +26,8 @@ def load_course_descriptions():
 
 
 if __name__ == "__main__":
-    course_data, course_desc, rmp_data = load_course_descriptions()
-    terms, terms_TF,doc_term_TF_matrix,vectorizer,new_course_data  = get_terms_and_TFs(course_data,max_dfq=.8)
+    course_data, _, rmp_data = load_course_descriptions()
+    terms_TF,doc_term_TF_matrix,vectorizer,new_course_data  = get_terms_and_TFs(course_data,max_dfq=.8)
     # terms_rmp, terms_TF_rmp,doc_term_TF_matrix_rmp,vectorizer_rmp,new_rmp_data  = get_terms_and_TFs(rmp_data,max_dfq=0.9,rmp=True)
 
 
@@ -56,9 +56,9 @@ if __name__ == "__main__":
     for idx, i in enumerate(range(1, 3000, 600)):
         i = 1189
         # desc_example = course_desc.iloc[1189]
-        desc_example = course_desc.iloc[i]
-        print("Input title: ",course_data.iloc[i][["titleLong"]][0]," . Input description",desc_example[0])
-        similar_courses = find_similar_course(doc_term_TF_matrix, terms, vectorizer, desc_example,dimensions=150)
+        desc_example = course_data.iloc[i]['description']
+        print("Input title: ",course_data.iloc[i][["titleLong"]][0]," . Input description",desc_example)
+        similar_courses = find_similar_course(doc_term_TF_matrix, vectorizer, desc_example)
         titles = []
         course_ids = []
         for sim_course_idx in similar_courses:

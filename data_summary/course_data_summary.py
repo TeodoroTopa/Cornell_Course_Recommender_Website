@@ -120,12 +120,12 @@ def get_terms_and_TFs(data,max_dfq=1,rmp=False, returntf=True):
         # phi_rate_my_prof(data)
         description_col = data.loc[:,"text_input"]
     else:
-        description_col = data.loc[:,'description']
+        description_col = data.loc[:,'description'] + data.loc[:,'titleLong']
 
     # dropping descriptions that correpond to classes that don't have descriptions
     description_col = description_col.dropna()
 
-    vectorizer = CountVectorizer(stop_words='english',max_df=max_dfq)  # don't use stop words
+    vectorizer = CountVectorizer(stop_words='english',max_df=max_dfq,min_df=4)  # don't use stop words
     
     doc_term_TF_matrix = vectorizer.fit_transform(description_col).toarray()
     term_doc_TF_matrix = doc_term_TF_matrix.T
@@ -142,9 +142,9 @@ def get_terms_and_TFs(data,max_dfq=1,rmp=False, returntf=True):
     # print("Number of terms that occur more than once:", num_terms_mult_occ)
 
     if max_dfq != 1 and returntf:
-        return (terms_TF,doc_term_TF_matrix,vectorizer,data.loc[description_col.index,:])
+        return (terms_TF,doc_term_TF_matrix,vectorizer,description_col.index)
     elif max_dfq != 1 and not returntf:
-        return (vectorizer,data.loc[description_col.index,:])
+        return (vectorizer,description_col.index)
 
     return terms_TF
 
