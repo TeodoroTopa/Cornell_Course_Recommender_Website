@@ -245,7 +245,7 @@ def saved():
 
 		if (result == []):
 			print ("empty")
-			return render_template('saved.html')
+			return render_template('saved.html', is_logged=True, username=google_auth.get_user_info()['given_name'])
 		else:
 			# extract data of classes saved, loaded into [data]
 			data = []
@@ -264,7 +264,7 @@ def save_course():
 	if not (google_auth.is_logged_in()):
 		return redirect(url_for('accounts.login'))
 
-	else: # make the change in here
+	else: # make the change in here to remove a class too
 		ourId = request.args.get('ourId')
 		email = get_user_email()
 
@@ -273,10 +273,23 @@ def save_course():
 		conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 		cur = conn.cursor()
 		
-		sql = "INSERT INTO saved_classes VALUES (\'" + email + "\', " + ourId + ");"
-		print (sql)
+		sql = "SELECT * FROM saved_classes WHERE email=\'" + email + "\' AND ourId=\'" + ourId + "\';"
 		cur.execute(sql)
+		result = cur.fetchall()
+		print (result)
 		conn.commit()
+
+		if (result == []):
+			sql = "INSERT INTO saved_classes VALUES (\'" + email + "\', " + ourId + ");"
+			print (sql)
+			cur.execute(sql)
+			conn.commit()
+		
+		else:
+			sql = "DELETE FROM saved_classes WHERE email=\'" + email + "\' AND ourId=\'" + ourId + "\';"
+			print (sql)
+			cur.execute(sql)
+			conn.commit()
 		
 		cur.close()
 		conn.close()

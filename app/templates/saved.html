@@ -9,21 +9,28 @@
 
 {% if data %}
 <ol id='search_results'>
-        {% for d in data %}
-        <li class=searchresult>
-            <h2 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h2>
-            <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
-            <p class='coursedescription'><strong>Description:</strong>
-            {% if d['description'] %}{{d['description']}}</p>
-            {% else %}No description is available at this time. Sorry!</p>
-            {% endif %}
-            <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
-            {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
-            {% else %}{{d['catalogPrereqCoreq']}}</p>
-            {% endif %}
-            <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a>
-        </li>
-        {% endfor %}
+    {% for d in data %}
+    <li class=searchresult>
+        <h2 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h2>
+        <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
+        <p class='coursedescription'><strong>Description:</strong>
+        {% if d['description'] %}{{d['description']}}</p>
+        {% else %}No description is available at this time. Sorry!</p>
+        {% endif %}
+        <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
+        {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
+        {% else %}{{d['catalogPrereqCoreq']}}</p>
+        {% endif %}
+        <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a> <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+    </li>
+    {% endfor %}
+</ol>
+{% else %}
+<ol id='search_results'>
+    <li class=searchresult>
+        <p style="text-align:center;"><strong>No Classes Saved</strong></p>
+        <p style="text-align:center;">Search for a Class on Homepage!</p>
+    </li>
 </ol>
 {% endif %}
 {% endblock %}
