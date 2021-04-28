@@ -1,0 +1,63 @@
+.global-search {
+text-align:center;
+padding:10px;
+}
+
+.form-control {
+border-radius: 5px;
+border: none;
+height: 30px;
+padding-left: 10px;
+}
+
+.global-search .form-control {
+width:500px;
+}
+
+#touchdown {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.global-search * {
+display:inline-block;
+margin-top: 40px;
+}
+
+
+.btn{
+background-color: #4285F4;
+width: 75px;
+height: 30px;
+border: none;
+border-radius: 3px;
+margin-top: 10px;
+color: white;
+}
+
+.step-links a{
+color: #4285F4;
+}
+
+#search_results {
+    margin: 15px auto 20px auto;
+}
+
+.searchresult {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: 15px auto 15px auto;
+    padding: 10px 10px 10px 10px;
+    border-radius: 8px;
+    background-color: lightgray;
+}
+
+.courseTitleandCode {
+    margin: 10px 0px 5px 5px;
+}
+
+.instructor {
+    margin: 5px 0px 15px 5px;
+}

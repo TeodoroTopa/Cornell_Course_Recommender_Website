@@ -30,6 +30,7 @@ DB_PASS = url.password
 DB_HOST = url.host
 
 course_contents = []
+ourId_to_course = dict()
 doc_term_tfidf_matrix = None
 vectorizer = None
 # terms = None
@@ -42,6 +43,9 @@ vectorizer = None
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
+	for course in course_contents:
+		ourId_to_course[course['ourId']] = course
+
 if doc_term_tfidf_matrix is None:
 	print("Computing TF-IDF...")
 	normalized_data = pd.json_normalize(course_contents)
@@ -233,7 +237,11 @@ def saved():
 			return render_template('saved.html')
 		else:
 			# extract data of classes saved, loaded into [data]
-			# data = []
+			data = []
+
+			for (saved_ourId,) in result:
+				data.append(ourId_to_course[saved_ourId])
+
 			return render_template('saved.html', is_logged=True, data=data, username=google_auth.get_user_info()['given_name'])
 	
 	else:
