@@ -13,6 +13,7 @@ import pandas as pd
 from data_summary.course_data_summary import get_terms_and_TFs
 from machine_learning.singular_value_decomp import find_similar_course, SVM_decomp
 import pickle
+import sys
 
 from app.accounts.controllers import google_auth
 
@@ -102,6 +103,10 @@ def get_similar():
 
 	words_compressed = get_svm_data("words_compressed.pkl")
 	docs_compressed = get_svm_data("docs_compressed.pkl")
+	print("WORDS SIZE: "+ str(sys.getsizeof(words_compressed)))
+	print("DOCS SIZE: "+ str(sys.getsizeof(docs_compressed)))
+	print("vectorizerML SIZE: "+ str(sys.getsizeof(vectorizerML)))
+	print("new_course_data SIZE: "+ str(sys.getsizeof(new_course_data)))
 
 	classNbr = request.args.get('classNbr')
 	print("COURSE ID: " + str(classNbr))
@@ -118,7 +123,8 @@ def get_similar():
 	# idx = np.where(course_data['classNbr'] == int(classNbr))[0][0]
 	# print("TEST IDX",idx)
 	desc = "" if course[0]['description'] is None else course[0]['description']
-	course_desc = pd.DataFrame({"description":[course[0]['titleLong'] + " " +desc]})["description"]
+	course_desc = pd.DataFrame({"description":[" " +desc]})["description"]
+
 	#course_desc = course[0]['titleLong'] + " " + course_data[course_data['classNbr'] == int(classNbr)]['description']
 	# print(course_desc)
 
