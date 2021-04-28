@@ -31,7 +31,11 @@
             <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a>
 
              <!-- CHANGE THIS TO REFLECT THE STATE OF THE DATABASE - if a course is saved or not -->
+            {% if d['saved'] == false %}
             <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+            {% else %}
+            <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Unsave</a>
+            {% endif %}
             
         </li>
         {% endfor %}

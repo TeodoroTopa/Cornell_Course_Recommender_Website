@@ -239,6 +239,13 @@ def get_similar():
 	HERE - for each line in results, add a dictionary entry on whether
 	some user has saved the class or not
 	'''
+	user_saved_classes = get_saved_classes(get_user_email())
+	if (user_saved_classes != []):
+		for some_course in results:
+			if (some_course['ourId'] in user_saved_classes):
+				some_course['saved'] = True
+			else:
+				some_course['saved'] = False
 
 	#
 	# ordering = dict(zip(course_ids,range(len(course_ids))))
