@@ -2,8 +2,6 @@
 Summary of the RateMyProfessor data.
 The input is the rate_my_professor.json file of RateMyProfessor data.
 
-mcheng1
-Apr 11, 2021
 """
 import numpy as np
 import pandas as pd

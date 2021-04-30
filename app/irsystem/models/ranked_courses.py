@@ -1,7 +1,7 @@
 """
 Gets the ranked list of courses based on the cosine similarity measure 
 between the courses (using the subject, catalog number, title, and description 
-of the courses).
+of the courses, along with the subject and catalog number together without spaces).
 """
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -35,8 +35,8 @@ def get_subj_nbr_title_desc_series(data):
     # descriptions that correspond to classes that don't have descriptions
     description_col = description_col.fillna("Not applicable.")
 
-    # the subject, catalogNbr, titleLong, and description put together
-    subj_nbr_title_desc_series = subject_col + " " + catalogNbr_col + " " + titleLong_col + " " + description_col
+    # the subject, catalogNbr, titleLong, and description put together, along with the subject and catalogNbr together without spaces
+    subj_nbr_title_desc_series = (subject_col + catalogNbr_col) + " " + subject_col + " " + catalogNbr_col + " " + titleLong_col + " " + description_col
 
     return subj_nbr_title_desc_series
 
