@@ -18,7 +18,7 @@
 <ol id='search_results'>
         {% for d in data %}
         <li class=searchresult>
-            <h2 class='courseTitleandCode'>{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</h2>
+        <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
             <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
             <p class='coursedescription'><strong>Description:</strong>
             {% if d['description'] %}{{d['description']}}</p>
@@ -28,13 +28,14 @@
             {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
             {% else %}{{d['catalogPrereqCoreq']}}</p>
             {% endif %}
+            {% if not d['description']==None %}
             <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a>
-
-             <!-- CHANGE THIS TO REFLECT THE STATE OF THE DATABASE - if a course is saved or not -->
-            {% if d['saved'] == false %}
-            <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+            {% endif %}
+            <!-- CHANGE THIS TO REFLECT THE STATE OF THE DATABASE - if a course is saved or not -->
+            {% if d['saved'] == true %}
+                <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Unsave</a>
             {% else %}
-            <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Unsave</a>
+                <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
             {% endif %}
             
         </li>
