@@ -162,7 +162,8 @@ def get_similar():
 		return redirect(url_for('irsystem.index', search=request.args.get('search')))
 	# print("length:",len(course_contents))
 	# vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3, returntf=False)
-	_, doc_term_TF_matrix, vectorizerML, _ = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.5)
+	# _, doc_term_TF_matrix, vectorizerML, _ = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.5)
+	_, _, vectorizerML, _ = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.5)
 
 	# words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
 	# pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
