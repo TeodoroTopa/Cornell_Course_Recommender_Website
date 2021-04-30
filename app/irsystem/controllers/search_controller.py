@@ -3,7 +3,7 @@ from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 
 project_name = "Cornell Course Recommender"
-net_id = "Marina Cheng (mkc236), Joanna Saikali (js3548), Yanchen Zhan (yz366), Mads Christian Berggrein Andersen (mba93), Teodoro Topa (tst42)"
+net_id = "Joanna Saikali (js3548), Yanchen Zhan (yz366), Mads Christian Berggrein Andersen (mba93), Teodoro Topa (tst42), Marina Cheng (mkc236)"
 
 from app.irsystem.models.ranked_courses import RankedCourses
 from app.irsystem.models import ranked_courses
