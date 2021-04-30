@@ -33,6 +33,7 @@ course_contents = []
 ourId_to_course = dict()
 doc_term_tfidf_matrix = None
 vectorizer = None
+words_compressed = None
 # terms = None
 # terms_TF = None
 # doc_term_TF_matrix = None
@@ -50,6 +51,10 @@ if doc_term_tfidf_matrix is None:
 	print("Computing TF-IDF...")
 	normalized_data = pd.json_normalize(course_contents)
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
+
+if words_compressed is None:
+	words_compressed = get_svm_data("words_compressed.pkl")
+	docs_compressed = get_svm_data("docs_compressed.pkl")
 
 def get_user_info():
 	if google_auth.is_logged_in():
@@ -155,23 +160,21 @@ def run_info_retrieval(query):
 def get_similar():
 	if request.args.get('search'):
 		return redirect(url_for('irsystem.index', search=request.args.get('search')))
-	print("length:",len(course_contents))
+	# print("length:",len(course_contents))
 	# vectorizerML, new_course_data = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.3, returntf=False)
 	_, doc_term_TF_matrix, vectorizerML, _ = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.5)
 
-	words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
-	pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
-	pickle.dump(docs_compressed, open("docs_compressed.pkl", "wb"))
+	# words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
+	# pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
+	# pickle.dump(docs_compressed, open("docs_compressed.pkl", "wb"))
 
-	# words_compressed = get_svm_data("words_compressed.pkl")
-	# docs_compressed = get_svm_data("docs_compressed.pkl")
 	# print("WORDS SIZE: "+ str(sys.getsizeof(words_compressed)))
 	# print("DOCS SIZE: "+ str(sys.getsizeof(docs_compressed)))
 	# print("vectorizerML SIZE: "+ str(sys.getsizeof(vectorizerML)))
 	# print("new_course_data SIZE: "+ str(sys.getsizeof(new_course_data)))
 
 	classNbr = request.args.get('classNbr')
-	print("COURSE ID: " + str(classNbr))
+	# print("COURSE ID: " + str(classNbr))
 	course_classNbrs = [c['classNbr'] for c in course_contents if c['description'] != None]
 	mapping_to_new_idx = [idx for idx,c in enumerate(course_contents) if c['description'] != None]
 
@@ -179,7 +182,7 @@ def get_similar():
 	course = [c for c in course_contents if c['classNbr']==int(classNbr)]
 	course_classNbr = course[0]['classNbr']
 	svm_idx = np.where(course_classNbr==np.array(course_classNbrs))[0][0]
-	print("svd index: ",svm_idx)
+	# print("svd index: ",svm_idx)
 	# print(type(course),course_contents[1])
 	# print("NAME: " + str(course[0]['titleLong']))
 	# course_data = pd.DataFrame(course_contents)
@@ -205,12 +208,12 @@ def get_similar():
 	titles = [course[0]['titleLong']]
 	classNbrs = []
 	for sim_course_idx in similar_courses:
-		print("sim_course_idx: ",sim_course_idx,sim_course_idx.shape)
+		# print("sim_course_idx: ",sim_course_idx,sim_course_idx.shape)
 		# print(course_data.iloc[sim_course_idx][["titleLong"]])
 		# print(course_contents[sim_course_idx]["titleLong"],type(course_contents[sim_course_idx]["titleLong"]),len(course_contents[sim_course_idx]["titleLong"]))
 		new_sim_idx = mapping_to_new_idx[sim_course_idx]
 		title = course_contents[new_sim_idx]["titleLong"]
-		print("Test :: : : ,",title)
+		# print("Test :: : : ,",title)
 		if title not in titles:
 			classNbrs.append( int(course_contents[new_sim_idx]["classNbr"]))
 			titles.append(title)
