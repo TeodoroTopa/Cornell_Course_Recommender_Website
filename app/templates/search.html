@@ -19,17 +19,63 @@
         <li class=searchresult>
         <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/SP21/class/{{d['subject']}}/{{d['catalogNbr']}}">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
             <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
+
+        <div class='RMP'>
+            {% if d['RMPprofname'] != None  %}
+                <div class='RMPtitle'>
+
+                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}</strong></p>
+
+                    <div class='RMPaverages'>
+
+                        {% if d['RMPdifficulty'] != None  %}
+                            <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }}/5</p>
+                        {% else %}
+                            <p><strong>Difficulty:</strong> n/a /1  </p>
+                        {% endif %}
+
+
+                        {% if d['RMPrating'] != None  %}
+                            <p><strong>Rating:</strong> {{d['RMPrating'] | round(2) }}/5</p>
+                        {% else %} 
+                            <p><strong>Rating:</strong> n/a /1  </p>
+                        {% endif %}
+
+
+                        {% if d['RMPtakeagain'] != None  %}
+                            <p><strong>Take Again:</strong> {{d['RMPtakeagain'] | round(2) }}/1  </p>
+                        {% else %}
+                            <p><strong>Take Again:</strong> n/a /1  </p>
+                        {% endif %}
+
+
+                    </div>
+
+
+                </div>
+            {% else %} 
+                <p class='RMPnone'>Sorry, no RMP ratings are available at this time!</p>
+
+            {% endif %}
+        </div>
+
+
+
             <p class='coursedescription'><strong>Description:</strong>
+
             {% if d['description'] %}{{d['description']}}</p>
             {% else %}No description is available at this time. Sorry!</p>
             {% endif %}
+
             <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
             {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
             {% else %}{{d['catalogPrereqCoreq']}}</p>
             {% endif %}
+
             {% if not d['description']==None %}
             <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a>
             {% endif %}
+
             <!-- CHANGE THIS TO REFLECT THE STATE OF THE DATABASE - if a course is saved or not -->
             {% if d['saved'] == true %}
                 <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Unsave</a>

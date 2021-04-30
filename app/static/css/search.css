@@ -61,3 +61,24 @@ color: #4285F4;
 .instructor {
     margin: 5px 0px 15px 5px;
 }
+
+.RMP{
+
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.RMPaverages{
+    display: flex;
+    flex-direction: row;
+}
+
+.RMPaverages p{
+    margin: auto;
+}
+
+.RMPtitle , .RMPnone{
+    margin-left: 10px;
+}
