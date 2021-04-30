@@ -24,28 +24,26 @@
             {% if d['RMPprofname'] != None  %}
                 <div class='RMPtitle'>
 
-                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}</strong></p>
-
+                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}}>({{d['RMPCount']}} ratings)</a>  </strong></p>
                     <div class='RMPaverages'>
-
                         {% if d['RMPdifficulty'] != None  %}
-                            <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }}/5</p>
+                            <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }} / 5</p>
                         {% else %}
-                            <p><strong>Difficulty:</strong> n/a /1  </p>
+                            <p><strong>Difficulty:</strong> n/a  </p>
                         {% endif %}
 
 
                         {% if d['RMPrating'] != None  %}
-                            <p><strong>Rating:</strong> {{d['RMPrating'] | round(2) }}/5</p>
+                            <p><strong>Rating:</strong> {{d['RMPrating'] | round(2) }} / 5</p>
                         {% else %} 
-                            <p><strong>Rating:</strong> n/a /1  </p>
+                            <p><strong>Rating:</strong> n/a </p>
                         {% endif %}
 
 
                         {% if d['RMPtakeagain'] != None  %}
-                            <p><strong>Take Again:</strong> {{d['RMPtakeagain'] | round(2) }}/1  </p>
+                            <p><strong>Take Again:</strong> {{d['RMPtakeagain'] | round(2) }}%  </p>
                         {% else %}
-                            <p><strong>Take Again:</strong> n/a /1  </p>
+                            <p><strong>Take Again:</strong> n/a </p>
                         {% endif %}
 
 

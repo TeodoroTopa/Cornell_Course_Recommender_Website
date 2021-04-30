@@ -63,11 +63,11 @@ color: #4285F4;
 }
 
 .RMP{
-
     display: flex;
     flex-direction: column;
     background-color: white;
     border-radius: 5px;
+    padding-bottom: 5px;
 }
 
 .RMPaverages{
