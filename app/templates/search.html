@@ -17,14 +17,14 @@
 <ol id='search_results'>
         {% for d in data %}
         <li class=searchresult>
-        <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/SP21/class/{{d['subject']}}/{{d['catalogNbr']}}">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
+        <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/SP21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
             <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
 
         <div class='RMP'>
             {% if d['RMPprofname'] != None  %}
                 <div class='RMPtitle'>
 
-                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}}>({{d['RMPCount']}} ratings)</a>  </strong></p>
+                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}} target="_blank">({{d['RMPCount']}} ratings)</a>  </strong></p>
                     <div class='RMPaverages'>
                         {% if d['RMPdifficulty'] != None  %}
                             <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }} / 5</p>
