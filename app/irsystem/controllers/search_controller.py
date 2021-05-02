@@ -19,6 +19,7 @@ import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy.engine.url import make_url
+
 ''' connect to database '''
 ''' note that these credentials may need to change '''
 DATABASE_URL = os.environ['DATABASE_URL']
@@ -34,13 +35,7 @@ ourId_to_course = dict()
 doc_term_tfidf_matrix = None
 vectorizer = None
 words_compressed = None
-# terms = None
-# terms_TF = None
-# doc_term_TF_matrix = None
-# vectorizerML = None
-# new_course_data = None
-# words_compressed = None
-# docs_compressed = None
+
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
@@ -155,6 +150,25 @@ def run_info_retrieval(query):
 	RankedCoursesObj = RankedCourses(query)
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(vectorizer, doc_term_tfidf_matrix)
 	return remove_cross_listings(ranked_courses_indeces)
+
+
+@irsystem.route('/report/', methods=['GET', 'POST'])
+def report_error():
+	# This function will be called when users want to report
+	# an error in the RateMyProfessor link
+
+	# we expect to bring in data that includes course being reported and the
+		# new RMP link to replace it
+	# CAN DO THIS EASILY BY LINKING TO A FLASK FORM
+	
+	# we need to find this course's [ourId] and any other course w/ same [ourId]
+
+	# we need to take the new RMP link and replace the current link (JOANNA),
+		# reuploading the data to S3 with the updated information / reloading
+		# in order for information to be accurate on both servers
+	
+	return None
+
 
 @irsystem.route('/similar/', methods=['GET','POST'])
 def get_similar():
@@ -271,6 +285,7 @@ def index():
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
 		data = run_info_retrieval(query)
+
 		output_message =  "Your search: " + query
 		return render_template('search.html', name=project_name, netid=net_id,
 							   output_message=output_message, data=data, query=query,
