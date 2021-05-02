@@ -36,6 +36,28 @@ doc_term_tfidf_matrix = None
 vectorizer = None
 words_compressed = None
 
+class_levels = ['undergrad', 'graduate']
+grading_scheme = ['sat-unsat', 'letter-grade']
+credits = ['all-credits', 'one-credit', 'two-credit', 'three-credit', 'four-credit', 'five-plus-credit']
+locations = ['ithaca-campus', 'cornell-tech', 'other-location']
+input_to_data = {
+	"undergrad":(["acadCareer"],["UG"]),
+	"graduate":(["acadCareer"],["GR"]),
+	"sat-unsat":(["gradingBasis"],["OPT","OPI","SUI","SUS"]),
+	"letter-grade":(["gradingBasis"],["OPT","OPI","GRI","GRD"]),
+	"all-credits":(["unitsMinimum", "unitsMaximum"],[0,100]),
+	"one-credit":(["unitsMinimum", "unitsMaximum"],[1,1]),
+	"two-credit":(["unitsMinimum", "unitsMaximum"],[2,2]),
+	"three-credit":(["unitsMinimum", "unitsMaximum"],[3,3]),
+	"four-credit":(["unitsMinimum", "unitsMaximum"],[4,4]),
+	"five-plus-credit":(["unitsMinimum", "unitsMaximum"],[5,100]),
+	"ithaca_campus":(["locationDescr"], ["Ithaca, NY (Main Campus)"]),
+	"cornell-tech":(["locationDescr"], ["Cornell Tech"]),
+	"other-location":(["locationDescr"], ["Geneva, NY", "AAP in NYC", "Beijing, China", 
+		"Engineering in NYC", "Human Ecology in NYC", "Other Domestic", "Other International", 
+		"Rome, Italy", "Washington, DC"])
+}
+
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
@@ -88,6 +110,26 @@ def get_saved_classes(email):
 		ret.append(y)
 	return ret
 
+def filter_on_indices(rankings, filters):
+	# toggle through each applicable filter, finding one that is "None"
+	# if a filter is None, then go through the rankings to remove courses
+	# that meet the criteria of which the filter was not initially set
+	# ...
+	# return a new list of rankings
+
+	remove_these_classes = []
+	for i in range(0,len(filters)):
+		for (category,applied) in filters[i]:
+			if (applied == None):
+				remove_these_classes.append(category)
+	print (remove_these_classes)
+
+	
+
+	return rankings
+
+# function that removes cross-listings from rankings, and
+# goes through to check if user has saved a course
 def remove_cross_listings(rankings):
 
 	user_saved_classes = get_saved_classes(get_user_email())
@@ -141,7 +183,7 @@ def remove_cross_listings(rankings):
 
 	return each_course_info
 
-def run_info_retrieval(query):
+def run_info_retrieval(query, filters):
 	''' To be replaced with actual query results
 
 	Should return a list of course dictionaries
@@ -149,7 +191,8 @@ def run_info_retrieval(query):
 	'''
 	RankedCoursesObj = RankedCourses(query)
 	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(vectorizer, doc_term_tfidf_matrix)
-	return remove_cross_listings(ranked_courses_indeces)
+	filtered_indices = filter_on_indices(ranked_courses_indeces, filters)
+	return remove_cross_listings(filtered_indices)
 
 
 @irsystem.route('/report/', methods=['GET', 'POST'])
@@ -277,6 +320,58 @@ def get_similar():
 						   is_logged=google_auth.is_logged_in(), username=get_user_info())
 
 
+def get_filters():
+	global class_levels
+	class_levels_response = []; class_level_boolean = True
+	for level in class_levels:
+		res = request.args.get(level)
+		class_levels_response.append((level, res))
+		if (res != None):
+			class_level_boolean = False
+	if (class_level_boolean):
+		for i in range(0,len(class_levels_response)):
+			class_levels_response[i]=(class_levels_response[i][0],'on')
+	print (class_levels_response)
+
+	global grading_scheme
+	grading_scheme_response = []; grading_scheme_boolean = True
+	for scheme in grading_scheme:
+		res = request.args.get(scheme)
+		grading_scheme_response.append((scheme, res))
+		if (res != None):
+			grading_scheme_boolean = False
+	if (grading_scheme_boolean):
+		for i in range(0,len(grading_scheme_response)):
+			grading_scheme_response[i]=(grading_scheme_response[i][0],'on')
+	print (grading_scheme_response)
+
+	global credits
+	credits_response = []; credits_boolean = True
+	for num in credits:
+		res = request.args.get(num)
+		credits_response.append((num, res))
+		if (res != None):
+			credits_boolean = False
+	if (credits_boolean):
+		for i in range(0,len(credits_response)):
+			credits_response[i]=(credits_response[i][0],'on')
+	print (credits_response)
+
+	global locations
+	location_response = []; locations_boolean = True
+	for location in locations:
+		res = request.args.get(location)
+		location_response.append((location, res))
+		if (res != None):
+			locations_boolean = False
+	if (locations_boolean):
+		for i in range(0,len(location_response)):
+			location_response[i]=(location_response[i][0],'on')
+	print (location_response)
+
+	return [class_levels_response, grading_scheme_response, credits_response, location_response]
+	
+
 @irsystem.route('/', methods=['GET'])
 def index():
 	query = request.args.get('search')
@@ -284,8 +379,8 @@ def index():
 		return render_template('index.html', name=project_name, netid=net_id,
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
-		data = run_info_retrieval(query)
-
+		user_filters = get_filters()
+		data = run_info_retrieval(query, user_filters)
 		output_message =  "Your search: " + query
 		return render_template('search.html', name=project_name, netid=net_id,
 							   output_message=output_message, data=data, query=query,
