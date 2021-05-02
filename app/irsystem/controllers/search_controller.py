@@ -42,10 +42,9 @@ credits = ['all-credits', 'one-credit', 'two-credit', 'three-credit', 'four-cred
 locations = ['ithaca-campus', 'cornell-tech', 'other-location']
 input_to_data = {
 	"undergrad":(["acadCareer"],["UG"]),
-	"graduate":(["acadCareer"],["GR"]),
+	"graduate":(["acadCareer"],["GR","LA","VM","GM"]),
 	"sat-unsat":(["gradingBasis"],["OPT","OPI","SUI","SUS"]),
 	"letter-grade":(["gradingBasis"],["OPT","OPI","GRI","GRD"]),
-	"all-credits":(["unitsMinimum", "unitsMaximum"],[0,100]),
 	"one-credit":(["unitsMinimum", "unitsMaximum"],[1,1]),
 	"two-credit":(["unitsMinimum", "unitsMaximum"],[2,2]),
 	"three-credit":(["unitsMinimum", "unitsMaximum"],[3,3]),
@@ -111,12 +110,16 @@ def get_saved_classes(email):
 	return ret
 
 def filter_on_indices(rankings, filters):
-	# toggle through each applicable filter, finding one that is "None"
 	# if a filter is None, then go through the rankings to remove courses
 	# that meet the criteria of which the filter was not initially set
 	# ...
 	# return a new list of rankings
 
+	global input_to_data
+
+	ret = rankings
+
+	# create a list of classes that we want to filter out of our rankings
 	remove_these_classes = []
 	for i in range(0,len(filters)):
 		for (category,applied) in filters[i]:
@@ -124,9 +127,20 @@ def filter_on_indices(rankings, filters):
 				remove_these_classes.append(category)
 	print (remove_these_classes)
 
-	
+	# begin to filter out classes from rankings
+	for filter_out in remove_these_classes:
+		corresponding_tuple = input_to_data[filter_out]
+		filter_by_category = corresponding_tuple[0]
+		filter_by_specifics = corresponding_tuple[1]
 
-	return rankings
+		# do a special case if [filter_out].index("credit") != -1
+		
+		# look through rankings to determine which classes should be removed
+		for idx in range(0,len(ret)):
+			index = ret[idx]
+			course = course_contents[index]
+
+	return ret
 
 # function that removes cross-listings from rankings, and
 # goes through to check if user has saved a course
