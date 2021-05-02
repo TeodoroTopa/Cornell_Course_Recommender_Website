@@ -49,5 +49,6 @@ html{
   text-align: center;
   font-size: 40px;
   color: #b31b1b;
-  text-shadow:0.5px 0.5px #000000;
+  #text-shadow:0.5px 0.5px #000000;
+  -webkit-text-stroke: 1px black;
 }

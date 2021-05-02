@@ -25,7 +25,8 @@ flex-direction: row;
 .appTitle{
   font-size: 40px;
   font-family:'Futura';
-  color: #000"
+  color: #000;
+  -webkit-text-stroke: 15px black;
 }
 
 .nav {

@@ -28,7 +28,7 @@ METHODS_ARG = ["","roster","roster","roster,subject","roster,subject,acadCareer,
 STD_FORMAT = ".json"
 ROSTER_PERIOD = 'SP21'
 class Roster():
-    def __init__(self):
+    def __init__(self,ROSTER_PERIOD='SP21'):
         #Method 1
         self.course_json = self.basic_json_extractor(method=METHODS[0],parameters=None)
         self.available_years_dict = self.available_rosters(self.course_json)
@@ -130,7 +130,7 @@ class Roster():
         if type(subject) == type(None):
             for i in tqdm(range(len(self.subjects_json))):
                 temp_sub = self.subjects_json[i]['value']
-                classes = self.basic_json_extractor(method=METHODS[5], parameters=[ROSTER_PERIOD, temp_sub])
+                classes = self.basic_json_extractor(method=METHODS[5], parameters=[year, temp_sub])
                 temp_data = classes['data']['classes']
                 detangled_column = pd.DataFrame()
                 for j in range(len(classes['data']['classes'])):
@@ -170,6 +170,10 @@ class Roster():
 
 
 if __name__ == "__main__":
-    roster = Roster()
+    roster = Roster('SP21')
+    rosterFall = Roster("FA21")
+    FA21_data = rosterFall.extract_course_rosterv1("FA21")
     SP21_data = roster.extract_course_rosterv1()
+
+
     roster.save_df(SP21_data)
