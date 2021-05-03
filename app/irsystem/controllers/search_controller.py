@@ -135,8 +135,6 @@ def filter_on_indices(rankings, filters):
 		filter_by_category = corresponding_tuple[0]
 		filter_by_specifics = corresponding_tuple[1]
 
-		test = True
-
 		idx = 0
 		# look through rankings to determine which classes should be removed
 		while (idx < len(ret)):
@@ -145,22 +143,27 @@ def filter_on_indices(rankings, filters):
 			if (len(filter_by_category) == 1):
 				val_to_comp = course[filter_by_category[0]]
 				if (val_to_comp in filter_by_specifics):
-					if (test):
-						print ("REMOVING!!!!!! " + filter_by_category[0] + "\t" + val_to_comp)
-						print (course['titleLong'])
-						test = False
 					del ret[idx]
 					idx -= 1
 			else: # remove class based on credit ranges
 				min_credits = filter_by_specifics[0]
 				max_credits = filter_by_specifics[1]
+				print (course['titleLong'])
+				print ("Min Filter: " + str(min_credits))
+				print ("Max Filter: " + str(max_credits))
+
 				min_to_comp = course[filter_by_category[0]]
 				max_to_comp = course[filter_by_category[1]]
-				if (not (min_to_comp >= min_credits and max_to_comp <= max_credits)): # check this logic
+
+				print ("Min Course: " + str(min_to_comp))
+				print ("Max Course: " + str(max_to_comp))
+
+				if (min_to_comp >= min_credits and max_to_comp <= max_credits):
+					print ("delete")
 					del ret[idx]
 					idx -= 1
 			idx += 1
-
+		print (len(ret))
 	return ret
 
 # function that removes cross-listings from rankings, and
