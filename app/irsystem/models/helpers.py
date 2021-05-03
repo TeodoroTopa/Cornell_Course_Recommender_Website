@@ -58,7 +58,7 @@ def json_numpy_obj_hook(dct):
 
 def get_course_data():
     BUCKET_NAME = 'cornell-course-data-bucket'
-    PATH = 'course_data_4.json'
+    PATH = 'course_data_2021fall.json'
 
     s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
     try:

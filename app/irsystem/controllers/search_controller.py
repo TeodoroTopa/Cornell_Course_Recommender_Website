@@ -69,8 +69,8 @@ if doc_term_tfidf_matrix is None:
 	vectorizer, doc_term_tfidf_matrix = ranked_courses.get_tfidf_matrix(normalized_data)
 
 if words_compressed is None:
-	words_compressed = get_svm_data("words_compressed.pkl")
-	docs_compressed = get_svm_data("docs_compressed.pkl")
+	words_compressed = get_svm_data("words_compressed_2021fall.pkl")
+	docs_compressed = get_svm_data("docs_compressed_2021fall.pkl")
 
 def get_user_info():
 	if google_auth.is_logged_in():
@@ -264,8 +264,8 @@ def get_similar():
 	_, _, vectorizerML, _ = get_terms_and_TFs(pd.DataFrame(course_contents), max_dfq=.5)
 
 	# words_compressed, s, docs_compressed = SVM_decomp(dimensions=100, matrix=doc_term_TF_matrix,vectorizer=vectorizerML)
-	# pickle.dump(words_compressed, open("words_compressed.pkl", "wb"))
-	# pickle.dump(docs_compressed, open("docs_compressed.pkl", "wb"))
+	# pickle.dump(words_compressed, open("words_compressed_2021fall.pkl", "wb"))
+	# pickle.dump(docs_compressed, open("docs_compressed_2021fall.pkl", "wb"))
 
 	# print("WORDS SIZE: "+ str(sys.getsizeof(words_compressed)))
 	# print("DOCS SIZE: "+ str(sys.getsizeof(docs_compressed)))
