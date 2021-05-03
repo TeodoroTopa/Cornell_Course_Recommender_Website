@@ -50,7 +50,7 @@ input_to_data = {
 	"three-credit":(["unitsMinimum", "unitsMaximum"],[3,3]),
 	"four-credit":(["unitsMinimum", "unitsMaximum"],[4,4]),
 	"five-plus-credit":(["unitsMinimum", "unitsMaximum"],[5,100]),
-	"ithaca_campus":(["locationDescr"], ["Ithaca, NY (Main Campus)"]),
+	"ithaca-campus":(["locationDescr"], ["Ithaca, NY (Main Campus)"]),
 	"cornell-tech":(["locationDescr"], ["Cornell Tech"]),
 	"other-location":(["locationDescr"], ["Geneva, NY", "AAP in NYC", "Beijing, China", 
 		"Engineering in NYC", "Human Ecology in NYC", "Other Domestic", "Other International", 
@@ -117,6 +117,7 @@ def filter_on_indices(rankings, filters):
 
 	global input_to_data
 
+	rankings_cpy = rankings
 	ret = rankings
 
 	# create a list of classes that we want to filter out of our rankings
@@ -134,11 +135,18 @@ def filter_on_indices(rankings, filters):
 		filter_by_specifics = corresponding_tuple[1]
 
 		# do a special case if [filter_out].index("credit") != -1
-		
+
 		# look through rankings to determine which classes should be removed
-		for idx in range(0,len(ret)):
-			index = ret[idx]
+		for index in rankings_cpy:
+			# index = rankings_cpy[idx]
 			course = course_contents[index]
+			if (len(filter_by_category) == 1):
+				val_to_comp = course[filter_by_category[0]]
+				if (val_to_comp in filter_by_specifics):
+					ret.remove(index)
+			# else:
+		
+		rankings_cpy = ret
 
 	return ret
 
