@@ -193,7 +193,7 @@ def remove_cross_listings(rankings):
 			# then update the description, adding it on to original description
 			previous_class = each_course_info[idx]
 			cross_list_string = " Cross-listed with " + str(course_contents[index]['subject']) + " " + str(course_contents[index]['catalogNbr'] + ".")
-			if (each_course_info[idx]['description'].find(cross_list_string) == -1):
+			if (each_course_info[idx]['description'] != None and each_course_info[idx]['description'].find(cross_list_string) == -1):
 				each_course_info[idx]['description'] = previous_class['description'] + cross_list_string 
 
 		else:
