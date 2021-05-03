@@ -117,7 +117,6 @@ def filter_on_indices(rankings, filters):
 
 	global input_to_data
 
-	rankings_cpy = rankings
 	ret = rankings
 
 	# create a list of classes that we want to filter out of our rankings
@@ -126,6 +125,8 @@ def filter_on_indices(rankings, filters):
 		for (category,applied) in filters[i]:
 			if (applied == None):
 				remove_these_classes.append(category)
+	if ("all-credits" in remove_these_classes):
+		remove_these_classes.remove("all-credits")
 	print (remove_these_classes)
 
 	# begin to filter out classes from rankings
@@ -134,19 +135,31 @@ def filter_on_indices(rankings, filters):
 		filter_by_category = corresponding_tuple[0]
 		filter_by_specifics = corresponding_tuple[1]
 
-		# do a special case if [filter_out].index("credit") != -1
+		test = True
 
+		idx = 0
 		# look through rankings to determine which classes should be removed
-		for index in rankings_cpy:
-			# index = rankings_cpy[idx]
+		while (idx < len(ret)):
+			index = ret[idx]
 			course = course_contents[index]
 			if (len(filter_by_category) == 1):
 				val_to_comp = course[filter_by_category[0]]
 				if (val_to_comp in filter_by_specifics):
-					ret.remove(index)
-			# else:
-		
-		rankings_cpy = ret
+					if (test):
+						print ("REMOVING!!!!!! " + filter_by_category[0] + "\t" + val_to_comp)
+						print (course['titleLong'])
+						test = False
+					del ret[idx]
+					idx -= 1
+			else: # remove class based on credit ranges
+				min_credits = filter_by_specifics[0]
+				max_credits = filter_by_specifics[1]
+				min_to_comp = course[filter_by_category[0]]
+				max_to_comp = course[filter_by_category[1]]
+				if (not (min_to_comp >= min_credits and max_to_comp <= max_credits)): # check this logic
+					del ret[idx]
+					idx -= 1
+			idx += 1
 
 	return ret
 
@@ -165,6 +178,8 @@ def remove_cross_listings(rankings):
 	for index in rankings:
 		course_name = course_contents[index]['titleLong']
 		course_ourId = course_contents[index]['ourId']
+
+		print(course_contents[index]['acadCareer'])
 
 		# if the course already exists in [each_course_unique]
 		if (course_ourId in ourId_to_titleLong.keys()):
@@ -204,6 +219,7 @@ def remove_cross_listings(rankings):
 			break
 
 	return each_course_info
+
 
 def run_info_retrieval(query, filters):
 	''' To be replaced with actual query results
