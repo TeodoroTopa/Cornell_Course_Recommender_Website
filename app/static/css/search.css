@@ -82,3 +82,66 @@ color: #4285F4;
 .RMPtitle , .RMPnone{
     margin-left: 10px;
 }
+
+.advanced-search{
+    display: none;
+    margin: 10px auto 10px auto;
+    background-color: lightgray;
+    width: 33%;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+  
+  .top-row{
+    display: flex;
+    flex-direction: row;
+    margin-top: 0px;
+  }
+  
+  .bottom-row{
+    display: flex;
+    flex-direction: row;
+    margin-top: -5px;
+  }
+  
+  .checkbox-section{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: 0px auto 10px auto;
+  }
+  
+  .credit-box-section{
+    display: flex;
+    flex-direction: row;
+    margin: 0px auto 10px auto;
+  }
+  
+  .credit-col-1{
+    margin-right: 20px;
+    margin-top: 0;
+  }
+
+  .credit-col-2 {
+    margin-top: 0;
+  }
+
+  .label-input-pair label,   .label-input-pair input, .label-input-pair-c, .label-input-pair-c label, .label-input-pair-c input {
+      margin: 3px 2px auto auto;
+  }
+  
+   .label-input-pair{
+    display: flex;
+    flex-direction: row;
+    margin: 3px 30% auto auto;
+  }
+  
+  .label-input-pair-c{
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .search-label{
+    font-weight: bold;
+    margin: 5px auto 5px auto;
+  }
