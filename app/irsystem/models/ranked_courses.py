@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from app.irsystem.models.helpers import *
 import pandas as pd
+import numpy as np
 
 class RankedCourses:
     
@@ -14,14 +15,20 @@ class RankedCourses:
         self.query = query
 
 
-    def get_ranked_course_indeces(self, tf_idf_vectorizer, all_docs_tfidf):
+    def get_ranked_course_indices(self, tf_idf_vectorizer, all_docs_tfidf):
         """Gets the indices of the ranked courses.
         """
         query_tfidf = tf_idf_vectorizer.transform([self.query])
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
 
-        self.sorted_indeces = list(np.argsort(sim_array)[::-1])
-        return self.sorted_indeces
+        sorted_indices_all = list(np.argsort(sim_array)[::-1])
+        sorted_sim_array = sorted(sim_array)[::-1]  # descending order
+
+        # only keep the indices of the courses with which the query has a 
+        # cosine similarity score of cos_sim_score or higher
+        cos_sim_score = 0.05
+        sorted_indices = [index for i, index in enumerate(sorted_indices_all) if sorted_sim_array[i] >= cos_sim_score]
+        return sorted_indices
         
 
 def get_subj_nbr_title_desc_series(data):
@@ -80,18 +87,18 @@ def get_similarity_array():
     return sim_array
         
 
-def get_ranked_course_indeces():
+def get_ranked_course_indices():
     """Gets the indices of the ranked courses.
     """
 
     sim_array = self.get_similarity_array()
-    self.sorted_indeces = list(np.argsort(sim_array)[::-1])
+    sorted_indices = list(np.argsort(sim_array)[::-1])
 
     # number of courses to be shown as output
     num_courses = 15
 
     # the indices of the most similar num_courses courses to the query
-    result = self.sorted_indeces[:num_courses]
+    result = sorted_indices[:num_courses]
     return [course_contents[index] for index in result]
 
 
@@ -101,8 +108,8 @@ def main():
     course_contents = get_course_data()
     normalized_data = pd.json_normalize(course_contents)
     tf_idf_vectorizer, docs_tf = get_tfidf_matrix(normalized_data)
-    ranked_course_indeces = RankedCoursesObj.get_ranked_course_indeces(tf_idf_vectorizer,docs_tf)
-    print(ranked_course_indeces)
+    ranked_course_indices = RankedCoursesObj.get_ranked_course_indices(tf_idf_vectorizer,docs_tf)
+    print(ranked_course_indices)
 
 if __name__ == "__main__":
     main()
