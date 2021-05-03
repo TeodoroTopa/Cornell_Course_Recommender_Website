@@ -228,8 +228,8 @@ def run_info_retrieval(query, filters):
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
 	RankedCoursesObj = RankedCourses(query)
-	ranked_courses_indeces = RankedCoursesObj.get_ranked_course_indeces(vectorizer, doc_term_tfidf_matrix)
-	filtered_indices = filter_on_indices(ranked_courses_indeces, filters)
+	ranked_courses_indices = RankedCoursesObj.get_ranked_course_indices(vectorizer, doc_term_tfidf_matrix)
+	filtered_indices = filter_on_indices(ranked_courses_indices, filters)
 	return remove_cross_listings(filtered_indices)
 
 
