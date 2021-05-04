@@ -123,12 +123,18 @@
 </form>
 
 {% if data %}
+
 <ol id='search_results' style="padding-bottom: 50px;">
-        {% for d in data %}
+    <li class=searchresult>
+        <p style="text-align: center;"><b>Filtering By: </b>
+            {{user_filters}}
+        </p>
+    </li>
+
+    {% for d in data %}
         <li class=searchresult>
         <div style="clear: both">
             <h2 class='courseTitleandCode' style="float: left"><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
-            <h4 class='instructor' style="float: right">{% if d['unitsMaximum']==d['unitsMinimum'] %} {{d['unitsMaximum']}} credits {% elif d['unitsMaximum']>d['unitsMinimum']%} {{d['unitsMinimum']}} - {{d['unitsMaximum']}} credits {% endif %}</h4>
         </div>
         <div style="clear: both">
             <h4 class='instructor' style="float: left">Instructor: {% if d['firstName'] %} {{d['firstName']}} {{d['lastName']}} {% else %} No Instructor Listed {% endif %} </h4>
@@ -169,7 +175,7 @@
                 <p class='RMPnone'>Sorry, no RMP ratings are available at this time!</p>
 
             {% endif %}
-        </div>
+            </div>
 
 
 
@@ -195,8 +201,8 @@
                 <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
             {% endif %}
 
-        </li>
-        {% endfor %}
+            </li>
+            {% endfor %}
 </ol>
 {% endif %}
 <script>

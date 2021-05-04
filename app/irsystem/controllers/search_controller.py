@@ -421,11 +421,38 @@ def index():
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
 		user_filters = get_filters()
+		user_filters_flatten_cpy = []
+		for uf in user_filters:
+			for (uf1,s) in uf:
+				if (uf1 != 'all-credits'):
+					user_filters_flatten_cpy.append((uf1,s))
+		
+		filter_to_text = {
+			"undergrad":"Undergraduate Classes",
+			"graduate":"Graduate Classes",
+			"sat-unsat":"S/U",
+			"letter-grade":"Letter Grades",
+			"one-credit":"1-credit Classes",
+			"two-credit":"2-credit Classes",
+			"three-credit":"3-credit Classes",
+			"four-credit":"4-credit Classes",
+			"five-plus-credit":"5+ credit Classes",
+			"ithaca-campus":"Classes in Ithaca",
+			"cornell-tech":"Classes at Cornell Tech",
+			"other-location":"Classes at Other Cornell Institutions",
+		}
+
+		user_filters_flatten_str = ""
+		for (uf,status) in user_filters_flatten_cpy:
+			if (status != None):
+				user_filters_flatten_str += filter_to_text[uf] + ", "
+		length = len(user_filters_flatten_str)
+
 		data = run_info_retrieval(query, user_filters)
 		output_message =  "Your search: " + query
 		return render_template('search.html', name=project_name, netid=net_id,
 							   output_message=output_message, data=data, query=query,
-							   is_logged=google_auth.is_logged_in(), username=get_user_info())
+							   is_logged=google_auth.is_logged_in(), username=get_user_info(), user_filters=user_filters_flatten_str[:length-2])
 
 
 @irsystem.route('/saved', methods=['GET'])
