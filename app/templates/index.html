@@ -5,8 +5,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="homepagecontent" style="padding-top: 10%;">
+<div class="overlay">
+<div class="homepagecontent" style="padding-top: 5%;">
     <img src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
+
+
+
+
 
     {% if is_logged %}
         <h1 class='appTitle'> {{username}}'s Course Recommender </h1>
@@ -15,9 +20,9 @@
     {% endif %}
 
     <div class="searchbox">
-        <form class="mainpage_searchform"> 
+        <form class="mainpage_searchform">
             <input id="input-search" type="text" name="search"
-                class="form-control" placeholder="What types of classes are you interested in?">     
+                class="form-control" placeholder="What types of classes are you interested in?">
 
 
 <!-- start of advanced search section -->
@@ -127,12 +132,12 @@
 
 <!-- end of advanced search filters -->
 
-            <button type="button" onclick="myFunction()" class="dropbtn" style="margin-top: 10px;">Advanced Search</button> 
+        <button type="button" onclick="myFunction()" class="dropbtn" style="margin-top: 10px; height:30px;">Advanced Search</button>
             <button type="submit" class="btn"> SEARCH </button>
         </form>
     </div>
 </div>
-
+</div>
 <script>
 
 function myFunction() {

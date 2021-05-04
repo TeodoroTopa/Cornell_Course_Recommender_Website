@@ -10,7 +10,7 @@
 
 <form class="form-inline global-search">
         <input id="input" type="text" name="search" class="form-control" value="{{query}}">
-        <button type="button" onclick="myFunction()" class="dropbtn" style="margin-top: 10px;">Advanced Search</button> 
+        <button type="button" onclick="myFunction()" class="dropbtn" style="margin-top: 10px; height:30px;">Advanced Search</button>
     <button type="submit" class="btn btn-info"> SEARCH </button>
 
 <!-- start of advanced search section -->
@@ -123,16 +123,21 @@
 </form>
 
 {% if data %}
-<ol id='search_results'>
+<ol id='search_results' style="padding-bottom: 50px;">
         {% for d in data %}
         <li class=searchresult>
-        <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
-            <h4 class='instructor'>Instructor: {% if d['firstName'] %} {{d['firstName']}} {{d['lastName']}} {% else %} No Instructor Listed {% endif %} </h4>
+        <div style="clear: both">
+            <h2 class='courseTitleandCode' style="float: left"><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
+            <h4 class='instructor' style="float: right">{% if d['unitsMaximum']==d['unitsMinimum'] %} {{d['unitsMaximum']}} credits {% elif d['unitsMaximum']>d['unitsMinimum']%} {{d['unitsMinimum']}} - {{d['unitsMaximum']}} credits {% endif %}</h4>
+        </div>
+        <div style="clear: both">
+            <h4 class='instructor' style="float: left">Instructor: {% if d['firstName'] %} {{d['firstName']}} {{d['lastName']}} {% else %} No Instructor Listed {% endif %} </h4>
+            <h4 class='instructor' style="float: right">{% if d['pattern'] %} {{d['pattern']}} {{d['timeStart']}}-{{d['timeEnd']}}  {% endif %}</h4>
+        </div>
 
-        <div class='RMP'>
+            <div class='RMP'>
             {% if d['RMPprofname'] != None  %}
                 <div class='RMPtitle'>
-
                     <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}} target="_blank">({{d['RMPCount']}} ratings)</a>  </strong></p>
                     <div class='RMPaverages'>
                         {% if d['RMPdifficulty'] != None  %}

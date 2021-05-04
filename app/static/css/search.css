@@ -48,10 +48,13 @@ color: #4285F4;
     display: flex;
     flex-direction: column;
     width: 70%;
-    margin: 15px auto 15px auto;
+    margin: 8px auto 8px auto;
     padding: 10px 10px 10px 10px;
-    border-radius: 8px;
-    background-color: lightgray;
+    border: solid;
+    border-radius: 5px;
+    border-width: 2px 2px 2px 2px;
+    border-color: darkgrey;
+    background-color: #F5F5F5;
 }
 
 .courseTitleandCode {
@@ -68,6 +71,8 @@ color: #4285F4;
     background-color: white;
     border-radius: 5px;
     padding-bottom: 5px;
+    background-color: #ddeaf0;
+    color: black;
 }
 
 .RMPaverages{
@@ -75,12 +80,14 @@ color: #4285F4;
     flex-direction: row;
 }
 
+
 .RMPaverages p{
     margin: auto;
 }
 
 .RMPtitle , .RMPnone{
     margin-left: 10px;
+    padding-bottom: 0px;
 }
 
 .advanced-search{

@@ -11,10 +11,14 @@
 <ol id='search_results'>
     {% for d in data %}
     <li class=searchresult>
-        <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
-        <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
-
-
+        <div style="clear: both">
+            <h2 class='courseTitleandCode' style="float: left"><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
+            <h4 class='instructor' style="float: right">{% if d['unitsMaximum']==d['unitsMinimum'] %} {{d['unitsMaximum']}} credits {% elif d['unitsMaximum']>d['unitsMinimum']%} {{d['unitsMinimum']}} - {{d['unitsMaximum']}} credits {% endif %}</h4>
+        </div>
+        <div style="clear: both">
+            <h4 class='instructor' style="float: left">Instructor: {% if d['firstName'] %} {{d['firstName']}} {{d['lastName']}} {% else %} No Instructor Listed {% endif %} </h4>
+            <h4 class='instructor' style="float: right">{% if d['pattern'] %} {{d['pattern']}} {{d['timeStart']}}-{{d['timeEnd']}}  {% endif %}</h4>
+        </div>
 
         <div class='RMP'>
             {% if d['RMPprofname'] != None  %}

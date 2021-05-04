@@ -6,26 +6,141 @@
 
 
 {% block content %}
+
 <img id= 'touchdown' src="/static/img/cornell-bear.png" alt="Cornell Bear" width=100px height=120px>
 
 <form class="form-inline global-search">
         <input id="input" type="text" name="search" class="form-control" value="{{crse['titleLong']}}">
+        <button type="button" onclick="myFunction()" class="dropbtn" style="margin-top: 10px; height:30px;">Advanced Search</button>
     <button type="submit" class="btn btn-info"> SEARCH </button>
+
+<!-- start of advanced search section -->
+<div id="advanced-search" class="noshow advanced-search">
+
+    <div class='top-row'>
+        <div class="checkbox-section" id="academic-level">
+            <p class="search-label">Academic Level:</p>
+
+            <div class="label-input-pair">
+                <label for="undergrad">Undergraduate</label>
+                <input id="undergrad" type="checkbox" name="undergrad">
+            </div>
+
+            <div class="label-input-pair">
+                <label for="graduate">Graduate</label>
+                <input id="graduate" type="checkbox" name="graduate">
+            </div>
+
+        </div>
+
+        <div class="checkbox-section" id="grading-scheme">
+            <p class="search-label">Grading Style:</p>
+
+            <div class="label-input-pair">
+                <label for="sat-unsat">S/U</label>
+                <input id="sat-unsat" type="checkbox" name="sat-unsat">
+            </div>
+
+            <div class="label-input-pair">
+                <label for="letter-grade">Letter Graded</label>
+                <input id="letter-grade" type="checkbox" name="letter-grade">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bottom-row">
+        <div class="checkbox-section" id="credits">
+            <p class="search-label">Credits:</p>
+
+            <div class="credit-box-section">
+
+                <div class='credit-col-1'>
+
+                    <div class="label-input-pair-c">
+                        <label for="all-credits">Any</label>
+                        <input type="checkbox" name="all-credits" id="all-credits">
+                    </div>
+
+                    <div class="label-input-pair-c">
+                        <label for="one-credit">1</label>
+                        <input type="checkbox" name="one-credit" id="one-credit">
+                    </div>
+
+                    <div class="label-input-pair-c">
+                        <label for="two-credit">2</label>
+                        <input type="checkbox" name="two-credit" id="two-credit">
+                    </div>
+
+                </div>
+
+
+                <div class="credit-col-2">
+
+                    <div class="label-input-pair-c">
+                        <label for="three-credit">3</label>
+                        <input type="checkbox" name="three-credit" id="three-credit">
+                    </div>
+
+                    <div class="label-input-pair-c">
+                        <label for="four-credit">4</label>
+                        <input type="checkbox" name="four-credit" id="four-credit">
+                    </div>
+
+                    <div class="label-input-pair-c">
+                        <label for="five-plus-credit">5+</label>
+                        <input type="checkbox" name="five-plus-credit" id="five-plus-credit">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="checkbox-section" id="location">
+            <p class="search-label">Location:</p>
+
+            <div class="label-input-pair">
+                <label for="ithaca-campus">Ithaca Campus</label>
+                <input id="ithaca-campus" type="checkbox" name="ithaca-campus">
+            </div>
+
+             <div class="label-input-pair">
+                <label for="cornell-tech">Cornell Tech</label>
+                <input id="cornell-tech" type="checkbox" name="cornell-tech">
+            </div>
+
+            <div class="label-input-pair">
+                <label for="other-location">Other Location</label>
+                <input id="other-location" type="checkbox" name="other-location">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end of advanced search filters -->
+
 </form>
 
 {% if data %}
-<h3> Courses similar to "{{crse['titleLong']}}": </h3>
-<ol id='search_results'>
+<h2 style="text-align: center"> Courses similar to "{{crse['titleLong']}}": </h2>
+<ol id='search_results' style="padding-bottom: 50px;">
         {% for d in data %}
         <li class=searchresult>
-        <h2 class='courseTitleandCode'><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
-            <h4 class='instructor'>Instructor: {{d['firstName']}} {{d['lastName']}}</h4>
-
+        <div style="clear: both">
+            <h2 class='courseTitleandCode' style="float: left"><a style="color:black;" href="https://classes.cornell.edu/browse/roster/FA21/class/{{d['subject']}}/{{d['catalogNbr']}}" target="_blank">{{d['subject']}} {{d['catalogNbr']}}: {{d['titleLong']}}</a></h2>
+            <h4 class='instructor' style="float: right">{% if d['unitsMaximum']==d['unitsMinimum'] %} {{d['unitsMaximum']}} credits {% elif d['unitsMaximum']>d['unitsMinimum']%} {{d['unitsMinimum']}} - {{d['unitsMaximum']}} credits {% endif %}</h4>
+        </div>
+        <div style="clear: both">
+            <h4 class='instructor' style="float: left">Instructor: {% if d['firstName'] %} {{d['firstName']}} {{d['lastName']}} {% else %} No Instructor Listed {% endif %} </h4>
+            <h4 class='instructor' style="float: right">{% if d['pattern'] %} {{d['pattern']}} {{d['timeStart']}}-{{d['timeEnd']}}  {% endif %}</h4>
+        </div>
         <div class='RMP'>
             {% if d['RMPprofname'] != None  %}
                 <div class='RMPtitle'>
 
-                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}}>({{d['RMPCount']}} ratings)</a>  </strong></p>
+                    <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}} target="_blank">({{d['RMPCount']}} ratings)</a>  </strong></p>
                     <div class='RMPaverages'>
                         {% if d['RMPdifficulty'] != None  %}
                             <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }} / 5</p>
@@ -59,26 +174,45 @@
         </div>
 
 
+
             <p class='coursedescription'><strong>Description:</strong>
+
             {% if d['description'] %}{{d['description']}}</p>
             {% else %}No description is available at this time. Sorry!</p>
             {% endif %}
+
             <p class='prereq'><strong>Prerequisites/Corequisites:</strong>
             {% if not d['catalogPrereqCoreq'] or d['catalogPrereqCoreq']==None %}None</p>
             {% else %}{{d['catalogPrereqCoreq']}}</p>
             {% endif %}
+
             {% if not d['description']==None %}
             <a href="{{ url_for('irsystem.get_similar', classNbr=d['classNbr']) }}">Find Similar Courses</a>
             {% endif %}
+
             <!-- CHANGE THIS TO REFLECT THE STATE OF THE DATABASE - if a course is saved or not -->
             {% if d['saved'] == true %}
                 <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Unsave</a>
             {% else %}
                 <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
             {% endif %}
-            
+
         </li>
         {% endfor %}
 </ol>
 {% endif %}
+<script>
+
+    function myFunction() {
+        if (document.getElementById("advanced-search").style.display == "none" || document.getElementById("advanced-search").style.display == "") {
+            console.log('it was not showing')
+            document.getElementById("advanced-search").style.display = "block"
+
+        } else {
+            console.log('it was showing')
+            document.getElementById("advanced-search").style.display = "none"
+        }
+    }
+
+    </script>
 {% endblock %}

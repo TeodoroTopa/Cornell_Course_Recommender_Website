@@ -271,7 +271,7 @@ html{
 }
 
 #input-search {
-  width: 40%;
+  width: 80%;
   height: 30px;
   border: #000 solid 1px;
   border-radius: 5px;
@@ -285,12 +285,14 @@ html{
   border-radius: 3px;
   margin-top: 10px;
   color: white;
+  margin: 10px;
 }
 
 .appTitle{
   text-align: center;
   font-size: 40px;
   color: #b31b1b;
+  margin: 30px;
   -webkit-text-stroke: 1px black;
 }
 
@@ -298,7 +300,7 @@ html{
   display: none;
   margin-top: 10px;
   background-color: lightgray;
-  width: 40%;
+  width: 80%;
   border: 1px solid black;
   border-radius: 5px;
 }
@@ -351,4 +353,15 @@ html{
 
 .label-input-pair label,   .label-input-pair input, .label-input-pair-c, .label-input-pair-c label, .label-input-pair-c input {
   margin: 3px 2px auto auto;
+}
+
+.overlay {
+  background-color:rgba(255, 255, 255, 0.5);
+  position: relative;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 10%;
+  width: 50%;
+  height: 70%;
 }
