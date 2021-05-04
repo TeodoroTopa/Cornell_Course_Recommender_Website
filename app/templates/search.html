@@ -122,12 +122,51 @@
 
 </form>
 
+<!-- THIS IS WHERE THE FILTER STUFF HAPPENS -->
+
+<!-- THIS IS THE END OF THE FILTER STUFF -->
+
+
+
 {% if data %}
 
 <ol id='search_results' style="padding-bottom: 50px;">
     <li class=searchresult>
-        <p style="text-align: center;"><b>Filtering By: </b>
-            {{user_filters}}
+        <p style="text-align: center;"> Active Filters:
+            <script>
+                const url = String(window.location.href);
+                const regexp = /([a-zA-Z-+]+)(?==on)/g;
+            
+                var filters = [...url.matchAll(regexp)];
+                
+                var dict = {
+                    "undergrad":"Undergraduate Classes",
+                    "graduate":"Graduate Classes",
+                    "sat-unsat":"S/U",
+                    "letter-grade":"Letter Grades",
+                    "one-credit":"1-credit Classes",
+                    "two-credit":"2-credit Classes",
+                    "three-credit":"3-credit Classes",
+                    "four-credit":"4-credit Classes",
+                    "five-plus-credit":"5+ credit Classes",
+                    "ithaca-campus":"Classes in Ithaca",
+                    "cornell-tech":"Classes at Cornell Tech",
+                    "other-location":"Classes at Other Cornell Institutions",
+               }
+
+                if (filters.length > 0) {
+            
+                    filters.forEach( function(element, i) { 
+                    if (i == filters.length -1 ) {
+                        document.write(` ${dict[element[0]]} `)
+                    } else {document.write(` ${dict[element[0]]}, `)
+                    }})
+                }  else  {
+                    document.write('None')
+                }
+            
+            </script>
+
         </p>
     </li>
 
