@@ -127,7 +127,6 @@ def filter_on_indices(rankings, filters):
 				remove_these_classes.append(category)
 	if ("all-credits" in remove_these_classes):
 		remove_these_classes.remove("all-credits")
-	print (remove_these_classes)
 
 	# begin to filter out classes from rankings
 	for filter_out in remove_these_classes:
@@ -148,22 +147,14 @@ def filter_on_indices(rankings, filters):
 			else: # remove class based on credit ranges
 				min_credits = filter_by_specifics[0]
 				max_credits = filter_by_specifics[1]
-				print (course['titleLong'])
-				print ("Min Filter: " + str(min_credits))
-				print ("Max Filter: " + str(max_credits))
-
 				min_to_comp = course[filter_by_category[0]]
 				max_to_comp = course[filter_by_category[1]]
 
-				print ("Min Course: " + str(min_to_comp))
-				print ("Max Course: " + str(max_to_comp))
-
 				if (min_to_comp >= min_credits and max_to_comp <= max_credits):
-					print ("delete")
+
 					del ret[idx]
 					idx -= 1
 			idx += 1
-		print (len(ret))
 	return ret
 
 # function that removes cross-listings from rankings, and
@@ -421,40 +412,12 @@ def index():
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
 		user_filters = get_filters()
-		# user_filters_flatten_cpy = []
-		# for uf in user_filters:
-		# 	for (uf1,s) in uf:
-		# 		if (uf1 != 'all-credits'):
-		# 			user_filters_flatten_cpy.append((uf1,s))
-		
-		# filter_to_text = {
-		# 	"undergrad":"Undergraduate Classes",
-		# 	"graduate":"Graduate Classes",
-		# 	"sat-unsat":"S/U",
-		# 	"letter-grade":"Letter Grades",
-		# 	"one-credit":"1-credit Classes",
-		# 	"two-credit":"2-credit Classes",
-		# 	"three-credit":"3-credit Classes",
-		# 	"four-credit":"4-credit Classes",
-		# 	"five-plus-credit":"5+ credit Classes",
-		# 	"ithaca-campus":"Classes in Ithaca",
-		# 	"cornell-tech":"Classes at Cornell Tech",
-		# 	"other-location":"Classes at Other Cornell Institutions",
-		# }
-
-		# user_filters_flatten_str = ""
-		# for (uf,status) in user_filters_flatten_cpy:
-		# 	if (status != None):
-		# 		user_filters_flatten_str += filter_to_text[uf] + ", "
-		# length = len(user_filters_flatten_str)
-
 		data = run_info_retrieval(query, user_filters)
 		output_message =  "Your search: " + query
 		return render_template('search.html', name=project_name, netid=net_id,
 							   output_message=output_message, data=data, query=query,
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
-							#    , user_filters=user_filters_flatten_str[:length-2])
-
+							   
 
 @irsystem.route('/saved', methods=['GET'])
 def saved():
