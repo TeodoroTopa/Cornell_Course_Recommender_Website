@@ -16,7 +16,7 @@ class RankedCourses:
         self.query = query
 
 
-    def get_list_and_query(self, data):
+    def get_subj_catNbr_and_nospace_query(self, data):
         """Gets the subject and catalog number series and the no-whitespaces query.
         """
         subject_col = data.loc[:, 'subject']
@@ -36,7 +36,7 @@ class RankedCourses:
         subject_col = data.loc[:, 'subject']
         catalogNbr_col = data.loc[:, 'catalogNbr']
 
-        (subject_catalogNbr_series, query_no_whitespaces) = self.get_list_and_query(data)
+        (subject_catalogNbr_series, query_no_whitespaces) = self.get_subj_catNbr_and_nospace_query(data)
 
         for i, subject_catalogNbr in enumerate(subject_catalogNbr_series):
             if query_no_whitespaces == subject_catalogNbr:
@@ -48,9 +48,10 @@ class RankedCourses:
 
     def check_query_if_subj_course_num(self, sim_array, data):
         """Checks if the query is the subject and the catalog number put together, 
-        whether or not there is a space between them.
+        whether or not there is a space between them. The corresponding course with 
+        that subject and number will then be first in the ranked output.
         """
-        (subject_catalogNbr_series, query_no_whitespaces) = self.get_list_and_query(data)
+        (subject_catalogNbr_series, query_no_whitespaces) = self.get_subj_catNbr_and_nospace_query(data)
         
         for i, subject_catalogNbr in enumerate(subject_catalogNbr_series):
             if query_no_whitespaces == subject_catalogNbr:
@@ -118,7 +119,7 @@ class RankedCourses:
 
 
 def get_subj_nbr_title_desc_series(data):
-    """Gets the pandas series of the course subject, catalog number, title, description combined.
+    """Gets the pandas series of the course subject, catalog number, title, and description combined.
     """
     subject_col = data.loc[:, 'subject']
     catalogNbr_col = data.loc[:, 'catalogNbr']
@@ -135,10 +136,6 @@ def get_subj_nbr_title_desc_series(data):
 
 def get_tfidf_matrix(data):
     """Gets the doc term tfidf matrix, with both unigrams and bigrams.
-
-    Each row is for the documents, which include the subject, catalog number,
-    long title, and description of the course, and the last row is for the
-    added query.
     """
     
     subj_nbr_title_desc_series = get_subj_nbr_title_desc_series(data)
