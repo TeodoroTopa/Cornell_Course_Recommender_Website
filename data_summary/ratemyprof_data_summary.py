@@ -141,7 +141,7 @@ def get_comment_summary(data):
     """
     
     comment_col = data.loc[:, 'comment']
-    num_wo_comments = np.sum(comment_col.isna())  # number of ratings without comments
+    num_wo_comments = np.sum(comment_col == "No Comments")  # number of ratings without comments
     num_rows = len(comment_col)
     num_w_comments = num_rows - num_wo_comments  # number of ratings with comments
 
