@@ -456,13 +456,22 @@ def saved():
 
 
 @irsystem.route('/save_course', methods=['GET'])
+# add another column(s) to represent vector representation of class saved
+# extracted from vectorized tf-idf (key: query_tfidf)
 def save_course():
 	if not (google_auth.is_logged_in()):
 		return redirect(url_for('accounts.login'))
 
 	else: # make the change in here to remove a class too
 		ourId = request.args.get('ourId')
+		# extract query here, vectorize it, use it as key to extract from dictionary
+		# load course contents, extract vectorizer representaiton --> save this in the database
+		# ^ these are global values defined at top of code
+		
 		email = get_user_email()
+		query = request.args.get('query_in')
+
+		print ("QUERY!!!!!!!!!!!!!!!!!!!!!" + str(query))
 
 		# add this class's ourId to database, along with user's name
 		conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)

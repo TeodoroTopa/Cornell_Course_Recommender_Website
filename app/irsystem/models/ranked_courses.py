@@ -97,6 +97,7 @@ class RankedCourses:
         query_tfidf = tf_idf_vectorizer.transform([self.query])
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
         
+        # if query in this area, then add courses in this area here as "relevant"
         
         sim_array = self.check_query_if_subj_course_num(sim_array, data)
 
