@@ -215,14 +215,14 @@ def remove_cross_listings(rankings):
 	return each_course_info
 
 
-def run_info_retrieval(query, filters):
+def run_info_retrieval(query, filters, rocchio_indices = []):
 	''' To be replaced with actual query results
 
 	Should return a list of course dictionaries
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
 	RankedCoursesObj = RankedCourses(query)
-	ranked_courses_indices = RankedCoursesObj.get_ranked_course_indices(vectorizer, doc_term_tfidf_matrix, normalized_data)
+	ranked_courses_indices = RankedCoursesObj.get_ranked_course_indices(vectorizer, doc_term_tfidf_matrix, normalized_data, rocchio_indices)
 	filtered_indices = filter_on_indices(ranked_courses_indices, filters)
 	return remove_cross_listings(filtered_indices)
 
@@ -351,6 +351,40 @@ def get_similar():
 						   output_message="", data=results, query="", crse=course[0],
 						   is_logged=google_auth.is_logged_in(), username=get_user_info())
 
+def rocchio_update():
+	if google_auth.is_logged_in():
+
+		email = get_user_email()
+
+		conn = psycopg2.connect(dbname=DB_NAME, port=DB_PORT, user=DB_USER, password=DB_PASS, host=DB_HOST)
+		conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+		cur = conn.cursor()
+
+		sql = "SELECT ourId FROM saved_classes WHERE email=\'" + email + "\';"
+		cur.execute(sql)
+		result = cur.fetchall()
+		# print(result)
+
+		conn.commit()
+
+		cur.close()
+		conn.close()
+
+		if (result == []):
+			print("empty")
+			return []
+		else:
+			# extract data of classes saved, loaded into [data]
+			data = []
+
+			for (saved_ourId,) in result:
+				data.append(ourId_to_course[saved_ourId]['classNbr'])
+
+			indeces = normalized_data[normalized_data['classNbr'].isin(data)].index
+			return list(indeces)
+	else:
+		# Rocchio not available
+		return []
 
 def get_filters():
 	global class_levels
@@ -412,7 +446,9 @@ def index():
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
 		user_filters = get_filters()
-		data = run_info_retrieval(query, user_filters)
+		saved_course_indeces = rocchio_update()
+		# Yanchen - can you check filters to see if we should do rocchio update here?
+		data = run_info_retrieval(query, user_filters, saved_course_indeces)
 		output_message =  "Your search: " + query
 		return render_template('search.html', name=project_name, netid=net_id,
 							   output_message=output_message, data=data, query=query,

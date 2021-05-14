@@ -84,7 +84,7 @@ class RankedCourses:
         
 
 
-    def get_similarity_array(self, tf_idf_vectorizer, all_docs_tfidf, data):
+    def get_similarity_array(self, tf_idf_vectorizer, all_docs_tfidf, data, rocchio_indices=[]):
         """Gets the similarity array.
         
         How similar the doc is to the query is determined by the cosine similarity 
@@ -95,19 +95,25 @@ class RankedCourses:
         self.misspelling_edit_distance(data)
 
         query_tfidf = tf_idf_vectorizer.transform([self.query])
+        # Update query_tfidf based on indices of all_docs_tfidf
+        # Need to add something like "indices saved"
+        if len(rocchio_indices)>0:
+            rocchio_idf = all_docs_tfidf[rocchio_indices]
+            print("ROCCHIO")
+            # Logic to update query
+
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
-        
         
         sim_array = self.check_query_if_subj_course_num(sim_array, data)
 
         return sim_array
     
     
-    def get_ranked_course_indices(self, tf_idf_vectorizer, all_docs_tfidf, data):
+    def get_ranked_course_indices(self, tf_idf_vectorizer, all_docs_tfidf, data, rocchio_indices=[]):
         """Gets the list of indices of the ranked courses.
         """
 
-        sim_array = self.get_similarity_array(tf_idf_vectorizer, all_docs_tfidf, data)
+        sim_array = self.get_similarity_array(tf_idf_vectorizer, all_docs_tfidf, data, rocchio_indices)
         sorted_indices_all = list(np.argsort(sim_array)[::-1])
         sorted_sim_array = sorted(sim_array)[::-1]  # descending order
         
