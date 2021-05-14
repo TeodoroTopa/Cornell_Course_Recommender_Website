@@ -104,6 +104,11 @@ class RankedCourses:
 
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
         
+<<<<<<< HEAD
+=======
+        # if query in this area, then add courses in this area here as "relevant"
+        
+>>>>>>> p06-master
         sim_array = self.check_query_if_subj_course_num(sim_array, data)
 
         return sim_array

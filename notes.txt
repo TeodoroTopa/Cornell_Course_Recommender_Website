@@ -1,0 +1,14 @@
+1) check information that is saved on DB
+     - run a script to update the DB so it contains new values have
+     - lots of work - may be worth it to skip?
+    
+2) reformat the database
+
+3) dictionary --> pickle --> save to cloud (ourId --> vectorized rep, list consist of courses users have saved)
+     -> 
+
+
+the goal is to implement this globally
+for each query, you have some saved courses that correspond
+help other users get better results from the query (similar to hubs and authorities)
+
