@@ -200,31 +200,6 @@ def remove_cross_listings(rankings):
             some_course = course_contents[index]
 def run_info_retrieval(query, filters, rocchio_indices = []):
 	''' To be replaced with actual query results
-
-            if (user_saved_classes != []):
-                if (some_course['ourId'] in user_saved_classes):
-                    some_course['saved'] = True
-                else:
-                    some_course['saved'] = False
-            else:
-                some_course['saved'] = False
-
-            if (course_name == "Language and Information"):
-                if (not "(Sponsored by the course staff :P) " in some_course['description']):
-                    some_course['description'] = "(Sponsored by the course staff :P) " + some_course['description']
-                each_course_info.insert(0, some_course)
-            else:
-                each_course_info.append(some_course)
-            ourId_to_titleLong[course_ourId] = course_name
-
-        if (len(each_course_info) == 15):
-            break
-
-    return each_course_info
-
-
-def run_info_retrieval(query, filters):
-    ''' To be replaced with actual query results
 	Should return a list of course dictionaries
 		Ex: [{"title":"Info Systems", "description": "fun"}, {"title":"Other Course", "description":"less fun"}
 	'''
