@@ -1,0 +1,11 @@
+Local Rocchio:
+When filter is turned on:
+Extract saved course information from cloud (Vectorized)
+Compute rel_doc centroid -> Sum and average
+Add to query vector with some weight (needs tuning)
+Do normal search
+
+So what we need to do :)
+- Can we make a dummy filter? Such that we have something that we can check for when implementing this
+- Make sure that the saved course function, saves vectorized version of the courses.
+- Write function that extracts this information from the cloud, when filter is active (and user is logged in)

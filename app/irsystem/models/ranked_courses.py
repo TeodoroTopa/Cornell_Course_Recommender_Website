@@ -9,6 +9,7 @@ from app.irsystem.models.helpers import *
 import pandas as pd
 import numpy as np
 from nltk.metrics import distance
+from collections import defaultdict
 
 class RankedCourses:
     
@@ -95,6 +96,9 @@ class RankedCourses:
         self.misspelling_edit_distance(data)
 
         query_tfidf = tf_idf_vectorizer.transform([self.query])
+        def_dict = defaultdict(list)
+        def_dict[tuple(query_tfidf.toarray())] = "hello"
+        print(def_dict.items())
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
         
         

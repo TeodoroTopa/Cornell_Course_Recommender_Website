@@ -243,7 +243,7 @@
             {% if d['saved'] == true %}
                 <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Unsave</a>
             {% else %}
-                <a href="{{ url_for('irsystem.save_course', ourId=d['ourId']) }}">Save Course</a>
+                <a href="{{ url_for('irsystem.save_course', ourId=d['ourId'], query_in=query) }}">Save Course</a>
             {% endif %}
 
             </li>
