@@ -9,7 +9,6 @@ from app.irsystem.models.helpers import *
 import pandas as pd
 import numpy as np
 from nltk.metrics import distance
-from collections import defaultdict
 
 class RankedCourses:
     
