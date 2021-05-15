@@ -93,15 +93,20 @@ class RankedCourses:
         self.put_space_in_subj_catNbr_query(data)
 
         self.misspelling_edit_distance(data)
-
+        alpha = 1
+        beta = 1
         query_tfidf = tf_idf_vectorizer.transform([self.query])
         # Update query_tfidf based on indices of all_docs_tfidf
         # Need to add something like "indices saved"
         if len(rocchio_indices)>0:
             rocchio_idf = all_docs_tfidf[rocchio_indices]
-            print("ROCCHIO")
+            #print("Relevant docs",len(rocchio_indices))
             # Logic to update query
+            rel_docs_centroid = 1/len(rocchio_indices) * np.sum(rocchio_idf,axis=0)
+            query_tfidf = alpha * query_tfidf + beta * rel_docs_centroid
+            print("Queries equal before and after update: ",np.array(tf_idf_vectorizer.transform([self.query])) == np.array(query_tfidf))
 
+            #print("updated query_tf_idf", np.array(tf_idf_vectorizer.transform([self.query])) == np.array(query_tfidf))
         sim_array = cosine_similarity(query_tfidf, all_docs_tfidf).flatten()
         
         sim_array = self.check_query_if_subj_course_num(sim_array, data)
