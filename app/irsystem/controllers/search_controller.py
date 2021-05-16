@@ -386,6 +386,7 @@ def rocchio_update():
 		# Rocchio not available
 		return []
 
+
 def get_filters():
 	global class_levels
 	class_levels_response = []; class_level_boolean = True
@@ -440,17 +441,23 @@ def get_filters():
 
 @irsystem.route('/', methods=['GET'])
 def index():
+
 	query = request.args.get('search')
 	if not query:
 		return render_template('index.html', name=project_name, netid=net_id,
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
 		user_filters = get_filters()
+		rocchio_on = request.args.get("rocchio-update")
+		saved_course_indeces = []
 
+		if (rocchio_on != None and not google_auth.is_logged_in()):
+			# redirect the user to login
+			return redirect(url_for('accounts.login'))
 		
-		saved_course_indeces = rocchio_update()
-		# Yanchen - can you check filters to see if we should do rocchio update here?
-
+		# print (request.args.get("rocchio-update"))
+		elif (request.args.get("rocchio-update") != None and google_auth.is_logged_in()):
+			saved_course_indeces = rocchio_update()
 
 		data = run_info_retrieval(query, user_filters, saved_course_indeces)
 		output_message =  "Your search: " + query
