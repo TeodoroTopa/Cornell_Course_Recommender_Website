@@ -446,8 +446,12 @@ def index():
 							   is_logged=google_auth.is_logged_in(), username=get_user_info())
 	else:
 		user_filters = get_filters()
+
+		
 		saved_course_indeces = rocchio_update()
 		# Yanchen - can you check filters to see if we should do rocchio update here?
+
+
 		data = run_info_retrieval(query, user_filters, saved_course_indeces)
 		output_message =  "Your search: " + query
 		return render_template('search.html', name=project_name, netid=net_id,

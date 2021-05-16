@@ -345,6 +345,10 @@ html{
   flex-direction: row;
 }
 
+.label-input-pair-personalize {
+  font-weight: bold;
+}
+
 .search-label{
   font-weight: bold;
   margin-right: auto;
