@@ -16,8 +16,8 @@ class RankedCourses:
         self.query = query
 
 
-    def get_subj_catNbr_and_nospace_query(self, data):
-        """Gets the subject and catalog number series and the no-whitespaces query.
+    def get_subj_catNbr_and_nospace_upper_query(self, data):
+        """Gets the subject and catalog number series and the no-whitespaces upper case query.
         """
         subject_col = data.loc[:, 'subject']
         catalogNbr_col = data.loc[:, 'catalogNbr']
@@ -25,36 +25,39 @@ class RankedCourses:
         subject_catalogNbr_series = subject_col + catalogNbr_col
 
         query_no_whitespaces = "".join(self.query.split())
+        query_no_whitespaces_uppercase = query_no_whitespaces.upper()
         
-        return (subject_catalogNbr_series, query_no_whitespaces)
+        return (subject_catalogNbr_series, query_no_whitespaces_uppercase)
 
 
     def put_space_in_subj_catNbr_query(self, data):
         """If the query is of the subject and catalog number, with no spaces in between,
-        then it is transformed into the subject and catalog number with a space in between.
+        then it is transformed into the subject and catalog number with a space in between. 
+        The subject will also be in upper case.
         """
         subject_col = data.loc[:, 'subject']
         catalogNbr_col = data.loc[:, 'catalogNbr']
 
-        (subject_catalogNbr_series, query_no_whitespaces) = self.get_subj_catNbr_and_nospace_query(data)
+        (subject_catalogNbr_series, query_no_whitespaces_uppercase) = self.get_subj_catNbr_and_nospace_upper_query(data)
 
         for i, subject_catalogNbr in enumerate(subject_catalogNbr_series):
-            if query_no_whitespaces == subject_catalogNbr:
+            if query_no_whitespaces_uppercase == subject_catalogNbr:
 
-                if self.query == (subject_col[i] + catalogNbr_col[i]):
+                if self.query.upper() == (subject_col[i] + catalogNbr_col[i]):
                     
                     self.query = subject_col[i] + " " + catalogNbr_col[i]
     
 
     def check_query_if_subj_course_num(self, sim_array, data):
         """Checks if the query is the subject and the catalog number put together, 
-        whether or not there is a space between them. The corresponding course with 
-        that subject and number will then be first in the ranked output.
+        whether or not there is a space between them, and whether or not the subject 
+        is in lower or upper case. The corresponding course with that subject and number 
+        will then be first in the ranked output.
         """
-        (subject_catalogNbr_series, query_no_whitespaces) = self.get_subj_catNbr_and_nospace_query(data)
+        (subject_catalogNbr_series, query_no_whitespaces_uppercase) = self.get_subj_catNbr_and_nospace_upper_query(data)
         
         for i, subject_catalogNbr in enumerate(subject_catalogNbr_series):
-            if query_no_whitespaces == subject_catalogNbr:
+            if query_no_whitespaces_uppercase == subject_catalogNbr:
                 
                 sim_array[i] = 1
         
@@ -130,20 +133,32 @@ class RankedCourses:
 
 
 def get_subj_nbr_title_desc_series(data):
-    """Gets the pandas series of the course subject, catalog number, title, and description combined.
+    """Gets the pandas series of the course subject, catalog number, 
+    title, description, and instructor name combined.
     """
     subject_col = data.loc[:, 'subject']
     catalogNbr_col = data.loc[:, 'catalogNbr']
     titleLong_col = data.loc[:, 'titleLong']
     description_col = data.loc[:, 'description']
-
+    firstName_col = data.loc[:, 'firstName']
+    middleName_col = data.loc[:, 'middleName']
+    lastName_col = data.loc[:, 'lastName']
+    
     # descriptions that correspond to classes that don't have descriptions
     description_col = description_col.fillna("Not applicable.")
+
+    # some do not have instructor names
+    firstName_col = firstName_col.fillna("")
+    middleName_col = middleName_col.fillna("")
+    lastName_col = lastName_col.fillna("")
 
     # the subject, catalogNbr, titleLong, and description put together
     subj_nbr_title_desc_series = subject_col + " " + catalogNbr_col + " " + titleLong_col + " " + description_col
 
-    return subj_nbr_title_desc_series
+    # and also the instructor names
+    subj_nbr_title_name_desc_series = subj_nbr_title_desc_series + " " + firstName_col + " " + middleName_col + " " + lastName_col
+    
+    return subj_nbr_title_name_desc_series
 
 def get_tfidf_matrix(data):
     """Gets the doc term tfidf matrix, with both unigrams and bigrams.
