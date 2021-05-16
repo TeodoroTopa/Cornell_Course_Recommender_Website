@@ -57,6 +57,7 @@ input_to_data = {
 		"Rome, Italy", "Washington, DC"])
 }
 
+# put these main scripts into a box to be accessed by a button
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
 	course_contents = get_course_data()
@@ -547,3 +548,7 @@ def save_course():
 		conn.close()
 
 		return redirect(request.referrer)
+
+@irsystem.route('/landing_page', methods=['GET'])
+def load_newhomepage():
+	return render_template('landing_page.html')
