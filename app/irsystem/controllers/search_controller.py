@@ -72,8 +72,8 @@ if doc_term_tfidf_matrix is None:
 
 if words_compressed is None:
 	# we need to change these pickle files
-	words_compressed = get_svm_data("words_compressed_2021fall.pkl")
-	docs_compressed = get_svm_data("docs_compressed_2021fall.pkl")
+	words_compressed = get_svm_data("words_compressed.pkl")
+	docs_compressed = get_svm_data("docs_compressed.pkl")
 
 
 def get_user_info():
