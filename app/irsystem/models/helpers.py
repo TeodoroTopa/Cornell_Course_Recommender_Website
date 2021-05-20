@@ -69,12 +69,12 @@ def get_course_data():
     sub = -999
 
     PATHS = []
-    if (date_month > 3 and date_day >= 20):
-        sub = (str)(date_yr)[2:]
+    if (date_month >= 10 and date_day >= 20):
+        sub = (str)(date_yr + 1)[2:]
     else:
-        sub = (str)(date_yr - 1)[2:]
-    PATHS.append('course_data_FA' + str(sub) + "_pt1.json")
-    PATHS.append('course_data_FA' + str(sub) + "_pt2.json")
+        sub = (str)(date_yr)[2:]
+    PATHS.append('course_data_SP' + str(sub) + "_pt1.json")
+    PATHS.append('course_data_SP' + str(sub) + "_pt2.json")
 
     try:
         print ("help!")
