@@ -60,29 +60,49 @@ def json_numpy_obj_hook(dct):
 
 def get_course_data():
     BUCKET_NAME = 'cornell-course-data-bucket'
+    PATH = 'course_data_2021fall.json'
+
     s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
-    
-    date = datetime.date.today()
-    date_yr = date.year
-    date_month = date.month
-    date_day = date.day
-    sub = -999
-
-    PATHS = []
-    if (date_month >= 3 and date_day >= 20):
-        sub = (str)(date_yr)[2:]
-    else:
-        sub = (str)(date_yr - 1)[2:]
-    PATHS.append('course_data_FA' + str(sub) + "_pt1.json")
-    PATHS.append('course_data_FA' + str(sub) + "_pt2.json")
-
     try:
-        print ("help!")
-        content_object_0 = s3.Object(BUCKET_NAME, PATHS[0])
-        file_content_0 = content_object_0.get()['Body'].read().decode('utf-8-sig')
-        content_object_1 = s3.Object(BUCKET_NAME, PATHS[1])
-        file_content_1 = content_object_1.get()['Body'].read().decode('utf-8-sig')
-        return [json.loads(file_content_0), json.loads(file_content_1)]
+        content_object = s3.Object(BUCKET_NAME, PATH)
+        file_content = content_object.get()['Body'].read().decode('utf-8-sig')
+        return json.loads(file_content)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
+        return []
+
+    # BUCKET_NAME = 'cornell-course-data-bucket'
+    # s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+    
+    # date = datetime.date.today()
+    # date_yr = date.year
+    # date_month = date.month
+    # date_day = date.day
+    # sub = -999
+
+    # PATHS = []
+    # if (date_month >= 3 and date_day >= 20):
+    #     sub = (str)(date_yr)[2:]
+    # else:
+    #     sub = (str)(date_yr - 1)[2:]
+    # PATHS.append('course_data_FA' + str(sub) + "_pt1.json")
+    # # PATHS.append('course_data_FA' + str(sub) + "_pt2.json")
+
+    # try:
+    #     print ("help!")
+    #     content_object_0 = s3.Object(BUCKET_NAME, PATHS[0])
+    #     file_content_0 = content_object_0.get()['Body'].read().decode('utf-8-sig')
+    #     ret0 = json.loads(file_content_0)
+    #     # content_object_1 = s3.Object(BUCKET_NAME, PATHS[1])
+    #     # file_content_1 = content_object_1.get()['Body'].read().decode('utf-8-sig')
+    #     # ret1 = json.loads(file_content_1)
+
+    #     return ret0
+    #     # return ret0+ret1
+
     except botocore.exceptions.ClientError as e:
         print ("help!!!!!!!!")
         if e.response['Error']['Code'] == "404":
