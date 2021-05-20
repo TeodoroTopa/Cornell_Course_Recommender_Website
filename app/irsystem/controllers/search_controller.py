@@ -60,9 +60,10 @@ input_to_data = {
 
 if len(course_contents) == 0:
 	print("Retrieving course contents from s3...")
-	course_contents = get_course_data()
+	course_contents_two = get_course_data()
+	course_contents = course_contents_two[0] + course_contents_two[1]
 	for course in course_contents:
-		ourId_to_course[course['ourId']] = course
+		ourId_to_course[course['ourId']] = course # within the json file we create in automation, we need to generate ourIds
 
 if doc_term_tfidf_matrix is None:
 	print("Computing TF-IDF...")
