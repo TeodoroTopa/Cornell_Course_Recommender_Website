@@ -69,7 +69,7 @@ def get_course_data():
     sub = -999
 
     PATHS = []
-    if (date_month > 3 and date_day >= 20):
+    if (date_month >= 3 and date_day >= 20):
         sub = (str)(date_yr)[2:]
     else:
         sub = (str)(date_yr - 1)[2:]
