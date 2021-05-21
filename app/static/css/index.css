@@ -1,10 +1,12 @@
 
-
+html {
+  overflow: hidden;
+}
 .slideshow {
   position: absolute;
   width: 100vw;
   height: 100vh;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .slideshow-image {
@@ -248,7 +250,7 @@ html{
 .homepagecontent {
   display: flex;
   flex-direction: column;
-  margin-top: -10%;
+  margin-top: -24%;
   align-items: center;
 }
 
@@ -292,7 +294,7 @@ html{
   text-align: center;
   font-size: 40px;
   color: #b31b1b;
-  margin: 30px;
+  margin: 25px;
   -webkit-text-stroke: 1px black;
 }
 
@@ -303,6 +305,7 @@ html{
   width: 80%;
   border: 1px solid black;
   border-radius: 5px;
+  font-size: 12px;
 }
 
 .top-row{
@@ -311,7 +314,7 @@ html{
 }
 
 .bottom-row{
-  margin-top: 5px;
+  margin-top: 15px;
   display: flex;
   flex-direction: row;
 }
@@ -362,6 +365,7 @@ html{
   margin-left: auto;
   margin-right: auto;
   padding-top: 10%;
+  margin-top: 10px;
   width: 50%;
   height: 70%;
 }
