@@ -169,7 +169,9 @@
                     if (i == filters.length -1 ) {
                         document.write(` ${dict[element[0]]} `)
                     } else {document.write(` ${dict[element[0]]}, `)
-                    }})
+                    }
+                    document.getElementById(element[0]).checked = true;
+                                })
                 }  else  {
                     document.write('None')
                 }
@@ -196,7 +198,7 @@
                     <p><strong>Rate my Professor Average Scores for {{d['RMPprofname']}}  <a style="color:black;" target="_blank" href={{d['RMPLink']}} target="_blank">({{d['RMPCount']}} ratings)</a>  </strong></p>
                     <div class='RMPaverages'>
                         {% if d['RMPdifficulty'] != None  %}
-                            <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }} / 5</p>
+                            <p><strong>Difficulty:</strong> {{ d['RMPdifficulty'] | round(2) }} / 5  <span class="Stars" ></span></p>
                         {% else %}
                             <p><strong>Difficulty:</strong> n/a  </p>
                         {% endif %}
