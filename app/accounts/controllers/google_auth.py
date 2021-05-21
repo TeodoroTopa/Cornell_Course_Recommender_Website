@@ -10,7 +10,7 @@ from authlib.integrations.requests_client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-ACCESS_TOKEN_URI = 'https://oauth2.googleapis.com/token'
+ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
 
 AUTHORIZATION_SCOPE = 'openid email profile'
