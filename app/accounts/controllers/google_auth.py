@@ -86,6 +86,8 @@ def login():
 @accounts.route('/google/auth')
 @no_cache
 def google_auth_redirect():
+
+    print ("redirected------------------------------")
     req_state = flask.request.args.get('state', default=None, type=None)
 
     print ((flask.session).keys())
