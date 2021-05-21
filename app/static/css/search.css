@@ -1,154 +1,155 @@
 .global-search {
-text-align:center;
-padding:10px;
-}
-
-.form-control {
-border-radius: 5px;
-border: none;
-height: 30px;
-padding-left: 10px;
-}
-
-.global-search .form-control {
-width:500px;
-}
-
-#touchdown {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.global-search * {
-display:inline-block;
-margin-top: 40px;
-}
-
-
-.btn{
-background-color: #4285F4;
-width: 75px;
-height: 30px;
-border: none;
-border-radius: 3px;
-margin-top: 10px;
-color: white;
-}
-
-.step-links a{
-color: #4285F4;
-}
-
-#search_results {
-    margin: 15px auto 20px auto;
-}
-
-.searchresult {
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    margin: 8px auto 8px auto;
-    padding: 10px 10px 10px 10px;
-    border: solid;
-    border-radius: 5px;
-    border-width: 2px 2px 2px 2px;
-    border-color: darkgrey;
-    background-color: #F5F5F5;
-}
-
-.courseTitleandCode {
-    margin: 10px 0px 5px 5px;
-}
-
-.instructor {
-    margin: 5px 0px 15px 5px;
-}
-
-.RMP{
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 5px;
-    padding-bottom: 5px;
-    background-color: #ddeaf0;
-    color: black;
-}
-
-.RMPaverages{
-    display: flex;
-    flex-direction: row;
-}
-
-
-.RMPaverages p{
-    margin: auto;
-}
-
-.RMPtitle , .RMPnone{
-    margin-left: 10px;
-    padding-bottom: 0px;
-}
-
-.advanced-search{
-    display: none;
-    margin: 10px auto 10px auto;
-    background-color: lightgray;
-    width: 33%;
-    border: 1px solid black;
-    border-radius: 5px;
+  text-align:center;
+  padding:10px;
   }
   
-  .top-row{
-    display: flex;
-    flex-direction: row;
-    margin-top: 0px;
+  .form-control {
+  border-radius: 5px;
+  border: none;
+  height: 30px;
+  padding-left: 10px;
   }
   
-  .bottom-row{
-    display: flex;
-    flex-direction: row;
-    margin-top: -5px;
+  .global-search .form-control {
+  width:500px;
   }
   
-  .checkbox-section{
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    margin: 0px auto 10px auto;
+  #touchdown {
+      position: absolute;
+      top: 10px;
+      right: 10px;
   }
   
-  .credit-box-section{
-    display: flex;
-    flex-direction: row;
-    margin: 0px auto 10px auto;
+  .global-search * {
+  display:inline-block;
+  margin-top: 40px;
   }
   
-  .credit-col-1{
-    margin-right: 20px;
-    margin-top: 0;
-  }
-
-  .credit-col-2 {
-    margin-top: 0;
-  }
-
-  .label-input-pair label,   .label-input-pair input, .label-input-pair-c, .label-input-pair-c label, .label-input-pair-c input {
-      margin: 3px 2px auto auto;
+  
+  .btn{
+  background-color: #4285F4;
+  width: 75px;
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  margin-top: 10px;
+  color: white;
   }
   
-   .label-input-pair{
-    display: flex;
-    flex-direction: row;
-    margin: 3px 30% auto auto;
+  .step-links a{
+  color: #4285F4;
   }
   
-  .label-input-pair-c{
-    display: flex;
-    flex-direction: row;
+  #search_results {
+      margin: 15px auto 20px auto;
   }
   
-  .search-label{
-    font-weight: bold;
-    margin: 5px auto 5px auto;
+  .searchresult {
+      display: flex;
+      flex-direction: column;
+      width: 70%;
+      margin: 8px auto 8px auto;
+      padding: 10px 10px 10px 10px;
+      border: solid;
+      border-radius: 5px;
+      border-width: 2px 2px 2px 2px;
+      border-color: darkgrey;
+      background-color: #F5F5F5;
   }
+  
+  .courseTitleandCode {
+      margin: 10px 0px 5px 5px;
+  }
+  
+  .instructor {
+      margin: 5px 0px 15px 5px;
+  }
+  
+  .RMP{
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      border-radius: 5px;
+      padding-bottom: 5px;
+      background-color: #ddeaf0;
+      color: black;
+  }
+  
+  .RMPaverages{
+      display: flex;
+      flex-direction: row;
+  }
+  
+  
+  .RMPaverages p{
+      margin: auto;
+  }
+  
+  .RMPtitle , .RMPnone{
+      margin-left: 10px;
+      padding-bottom: 0px;
+  }
+  
+  .advanced-search{
+      display: none;
+      margin: 10px auto 10px auto;
+      background-color: lightgray;
+      width: 33%;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+    
+    .top-row{
+      display: flex;
+      flex-direction: row;
+      margin-top: 0px;
+    }
+    
+    .bottom-row{
+      display: flex;
+      flex-direction: row;
+      margin-top: -5px;
+    }
+    
+    .checkbox-section{
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      margin: 0px auto 10px auto;
+    }
+    
+    .credit-box-section{
+      display: flex;
+      flex-direction: row;
+      margin: 0px auto 10px auto;
+    }
+    
+    .credit-col-1{
+      margin-right: 20px;
+      margin-top: 0;
+    }
+  
+    .credit-col-2 {
+      margin-top: 0;
+    }
+  
+    .label-input-pair label,   .label-input-pair input, .label-input-pair-c, .label-input-pair-c label, .label-input-pair-c input {
+        margin: 3px 2px auto auto;
+    }
+    
+     .label-input-pair{
+      display: flex;
+      flex-direction: row;
+      margin: 3px 30% auto auto;
+    }
+    
+    .label-input-pair-c{
+      display: flex;
+      flex-direction: row;
+    }
+    
+    .search-label{
+      font-weight: bold;
+      margin: 5px auto 5px auto;
+    }
+  
